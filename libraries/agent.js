@@ -1,13 +1,14 @@
 
 
-class Agent extends Object {
+var Agent = class Agent extends WorldObject {
 
     
     constructor(world, x, y, object_width, object_height, step_size) {
+        super(world, x, y, object_width, object_height);
         this.step_size = step_size;
         this.move_vec_dict = get_move_vec_dict(step_size);
         this.orientation = 'down';
-        super(Agent, this).__init__(world, x, y, object_width, object_height);
+        this.step = 0;
     }
     
     move(direction) {
@@ -20,8 +21,9 @@ class Agent extends Object {
     
         
         // update player location
-        move_vec = this.move_vec_dict[direction];
-        this.x, this.y = this.new_location(direction);
+        var new_location = this.get_new_location(direction);
+        this.x = new_location.x
+        this.y = new_location.y
         this.orientation = direction;
         this.step += 1;
         
@@ -30,17 +32,17 @@ class Agent extends Object {
         }
     }
     
-    new_location(direction, multiplier=1) {
-        move_vec = this.move_vec_dict[direction];
-        new_x = this.x + move_vec[0] * multiplier;
-        new_y = this.y + move_vec[1] * multiplier;
-        return new_x, new_y;
+    get_new_location(direction, multiplier=1) {
+        var move_vec = this.move_vec_dict[direction];
+        var new_x = this.x + move_vec.x * multiplier;
+        var new_y = this.y + move_vec.y * multiplier;
+        return {x: new_x, y: new_y};
     }
         
     undo_move(direction) {
-        move_vec = this.move_vec_dict[direction];
-        this.x -= move_vec[0];
-        this.y -= move_vec[1];
+        var move_vec = this.move_vec_dict[direction];
+        this.x -= move_vec.x;
+        this.y -= move_vec.y;
         this.orientation = direction;
     }
     
@@ -50,11 +52,11 @@ class Agent extends Object {
     }
     
     get_rect_points() {
-        rect_points = [
-            (this.x + this.object_width / 2, this.y + this.object_height / 2),
-            (this.x - this.object_width / 2, this.y + this.object_height / 2),
-            (this.x + this.object_width / 2, this.y - this.object_height / 2),
-            (this.x - this.object_width / 2, this.y - this.object_height / 2)
+        var rect_points = [
+            {x: Math.floor(this.x + this.object_width / 2), y: Math.floor(this.y + this.object_height / 2)},
+            {x: Math.floor(this.x - this.object_width / 2), y: Math.floor(this.y + this.object_height / 2)},
+            {x: Math.floor(this.x + this.object_width / 2), y: Math.floor(this.y - this.object_height / 2)},
+            {x: Math.floor(this.x - this.object_width / 2), y: Math.floor(this.y - this.object_height / 2)}
         ];
         
         return rect_points;
@@ -62,25 +64,24 @@ class Agent extends Object {
 }
 
 
-class SpriteCharacter extends Agent {
+var SpriteCharacter = class SpriteCharacter extends Agent {
     
-    char_sprites = None;
-
     constructor(world, x, y, object_width, object_height, step_size, char_sprites) {
-        this.char_sprites = char_sprites;
         super(world, x, y, object_width, object_height, step_size);
+        this.char_sprites = char_sprites;
     }
     
     draw_object() {
-        step_nr = this.step % 2;
-        sprite_i, sprite_j, mirror = this.char_sprites[step_nr][this.orientation];
-        current_sprite = this.world.char_sprite_arr[sprite_i][sprite_j];
+        var step_nr = this.step % 2;
+        console.log(this)
+        var char_sprite_config = this.char_sprites.step_sprites[step_nr][this.orientation];
+        var current_sprite = this.world.char_sprite_arr[char_sprite_config.i][char_sprite_config.j];
         
-        if (mirror) {
-            pushMatrix();
+        if (char_sprite_config.mirror) {
+            push();
             scale(-1,1);
             image(current_sprite, -this.x - this.object_width / 2, this.y - this.object_height / 2, this.object_width, this.object_height);
-            popMatrix();
+            pop();
         } else {
             image(current_sprite, this.x - this.object_width / 2, this.y - this.object_height / 2, this.object_width, this.object_height);
         }
@@ -89,9 +90,9 @@ class SpriteCharacter extends Agent {
     
 function get_move_vec_dict(distance) {
     return {
-        'up': (0, -distance),
-        'down': (0, distance),
-        'left': (-distance, 0),
-        'right': (distance, 0)
+        'up': {x: 0, y: -distance},
+        'down': {x: 0, y: distance},
+        'left': {x: -distance, y: 0},
+        'right': {x: distance, y: 0}
     };
 }

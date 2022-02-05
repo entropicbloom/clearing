@@ -1,42 +1,40 @@
 
-
-char_sprites = {
-    'file_name': 'character_sprites.png',
-    'offset': 16,
-    'border': 0,
-}
-
 player_sprites = {
-    0: {
-        'down': (0, 0, False),
-        'up': (1, 0, False),
-        'left': (2, 0, False),
-        'right': (2, 0, True)
-    },
-    1: {
-        'down': (3, 0, False),
-        'up': (4, 0, False),
-        'left': (5, 0, False),
-        'right': (5, 0, True)
-    }
+    step_sprites: [
+        {
+            'down': {i: 0, j: 0, mirror: false},
+            'up': {i: 1, j: 0, mirror: false},
+            'left': {i: 2, j: 0, mirror: false},
+            'right': {i: 2, j: 0, mirror: true}
+        },
+        {
+            'down': {i: 3, j: 0, mirror: false},
+            'up': {i: 4, j: 0, mirror: false},
+            'left': {i: 5, j: 0, mirror: false},
+            'right': {i: 5, j: 0, mirror: true}
+        }
+]
 }
 
 old_man_sprites = {
-    0: {
-        'down': (5, 5, False),
-        'up': (6, 5, False),
-        'left': (7, 5, False),
-        'right': (7, 5, True)
-    },
-    1: {
-        'down': (0, 6, False),
-        'up': (1, 6, False),
-        'left': (2, 6, False),
-        'right': (2, 6, True)
-    }
+    step_sprites: [
+        {
+            'down': {i: 5, j: 5, mirror: false},
+            'up': {i: 6, j: 5, mirror: false},
+            'left': {i: 7, j: 5, mirror: false},
+            'right': {i: 7, j: 5, mirror: true}
+        },
+        {
+            'down': {i: 0, j: 6, mirror: false},
+            'up': {i: 1, j: 6, mirror: false},
+            'left': {i: 2, j: 6, mirror: false},
+            'right': {i: 2, j: 6, mirror: true}
+        }
+    ]
 }
 
-old_man_1 = NPC(
+old_man_1 = new NPC(
+    world,
     300, // x
     100, // y
     25, // object_width
@@ -71,7 +69,8 @@ old_man_1 = NPC(
     'Old man' // name
 )
 
-stoner_dude_config_1 = NPC(
+stoner_dude_config_1 = new NPC(
+    world,
     200,
     200,
     25,

@@ -1,28 +1,34 @@
 
-
+let pressed_key;
+let counter = 0
 class World {}
 
-var world;
-
-function setup() 
+function preload() {
+  tiles_png = loadImage("data/tiles.png")
+  sprites_png = loadImage("data/character_sprites.png")
+}
 
 function setup() {
-  size(600, 450);
 
-  world = World();
+  createCanvas(600, 450);
+
+  
+
+  world = new World();
   
   
-  char_sprite_arr = load_tile_arr(10, 10, char_sprites);
-  current_env = GridEnvironment(world, env_tiles, home_map);
+  char_sprite_arr = load_tile_arr(10, 10, char_sprites, sprites_png);
   
+  current_env = new GridEnvironment(world, env_tiles, home_map);
+
   
-  player = SpriteCharacter(world,
-                           current_env.grid_size * 15, // x
-                           current_env.grid_size * 10, // y
-                           25, // width
-                           25, // height
-                           5, // step size
-                           player_sprites);
+  player = new SpriteCharacter(world,
+                               current_env.grid_size * 15, // x
+                               current_env.grid_size * 10, // y
+                               25, // width
+                               25, // height
+                               5, // step size
+                               player_sprites);
   world.player = player;
   world.char_sprite_arr = char_sprite_arr;
   world.current_env = current_env;
@@ -30,49 +36,57 @@ function setup() {
   
   current_env.draw_environment();
   current_env.draw_contents();
-  player.draw_object();
+  world.player.draw_object();
 
 }
   
 
 function draw() {
-    
+    if (counter % 5 == 0 && pressed_key != null) {
+        key_action(pressed_key)
+    }   
+
     if (world.text_instance == null) {
         world.current_env.update_contents();
     }
     if (world.canvas_instance != null) {
         world.canvas_instance.draw_canvas();
     }
+
+    counter += 1
 }
 
-function keyPressed() {
+function key_action(key) {
     
 
-    const key_direction_map = new Map();
-    key_direction_map.set('w', 'up');
-    key_direction_map.set('s', 'down');
-    key_direction_map.set('d', 'right');
-    key_direction_map.set('a', 'left');
-    
-    if (keyCode in key_direction_map.keys()) {
+    var key_direction_map = {
+        'w': 'up',
+        's': 'down',
+        'd': 'right',
+        'a': 'left'
+    };
 
+    if (key in key_direction_map) {
         world.player.move(key_direction_map[key]);
-        world.player.draw_object();
-        
-        env_id, new_coordinates = world.current_env.check_passage(world.player);
 
-        if (env_id > -1) {
-            env_dict = map_registry[env_id];
-            world.current_env = GridEnvironment(world, env_tiles, env_dict);
+        world.player.draw_object();
+
+        var passage = world.current_env.check_passage(world.player);
+        //console.log('returned passage', passage)
+
+        if (passage != null) {
+            env_dict = map_registry[passage.destination_id];
+            world.current_env = new GridEnvironment(world, env_tiles, env_dict);
             world.current_env.draw_environment();
             world.current_env.draw_contents();
-            world.player.x, world.player.y = new_coordinates;
+            world.player.x = passage.new_x
+            world.player.y = passage.new_y
             world.player.draw_object();
         }
         return
     } 
     
-    if (keyCode == ' ') {
+    if (key == ' ') {
         if ((world.text_instance == null) & (world.canvas_instance == null)) {
             world.current_env.interact(world.player);
           return
@@ -81,21 +95,31 @@ function keyPressed() {
             if (world.text_instance.more_text_available()) {
                 world.text_instance.display_text();
                 world.text_instance.next();
-            } else{
+            } else {
                 draw_scene();
-                world.text_instance = None;
+                world.text_instance = null;
           }
           return
         }
       }
 
         
-    if (keyCode == 'e') {
-        world.text_instance = None;
-        world.canvas_instance = None;
+    if (key == 'e') {
+        world.text_instance = null;
+        world.canvas_instance = null;
         draw_scene();
     }
   }
+
+function keyPressed() {
+    pressed_key = key
+}
+
+function keyReleased() {
+    if (pressed_key == key) {
+        pressed_key = null
+    }
+} 
 
 function draw_scene() {
     world.current_env.draw_environment();
