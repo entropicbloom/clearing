@@ -73,7 +73,7 @@ var SpriteCharacter = class SpriteCharacter extends Agent {
     
     draw_object() {
         var step_nr = this.step % 2;
-        console.log(this)
+
         var char_sprite_config = this.char_sprites.step_sprites[step_nr][this.orientation];
         var current_sprite = this.world.char_sprite_arr[char_sprite_config.i][char_sprite_config.j];
         

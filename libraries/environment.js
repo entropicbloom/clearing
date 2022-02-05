@@ -150,6 +150,7 @@ class GridEnvironment extends Environment {
         var objects_on_tile_list = [];
         var extended_objects = this.objects.concat([this.world.player]);
         for (var i = 0; i < extended_objects.length; i++) {
+            
             var object = extended_objects[i];
             var object_tile = this.to_grid_coordinates({x: object.x, y: object.y});
             if (tile.i == object_tile.i && tile.j == object_tile.j) {
@@ -173,11 +174,9 @@ class GridEnvironment extends Environment {
         for (var tile_idx = 0; tile_idx < covered_tiles.length; tile_idx++) {
             var covered_tile = covered_tiles[tile_idx];
             
-            //console.log('covered_tile', covered_tile)
             for (var passage_idx = 0; passage_idx < this.grid_map['passages'].length; passage_idx++) {
                 var passage = this.grid_map['passages'][passage_idx];
                 
-                //console.log('passage', passage)
                 if (covered_tile.i == passage.i && covered_tile.j == passage.j)  {
                     return passage;
                 }

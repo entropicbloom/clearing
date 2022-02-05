@@ -72,7 +72,6 @@ function key_action(key) {
         world.player.draw_object();
 
         var passage = world.current_env.check_passage(world.player);
-        //console.log('returned passage', passage)
 
         if (passage != null) {
             env_dict = map_registry[passage.destination_id];
@@ -112,13 +111,17 @@ function key_action(key) {
   }
 
 function keyPressed() {
-    pressed_key = key
+    if (['w', 'a', 's', 'd'].includes(key)) {
+        pressed_key = key
+    }
+    key_action(key)
 }
 
 function keyReleased() {
     if (pressed_key == key) {
         pressed_key = null
     }
+    
 } 
 
 function draw_scene() {

@@ -52,7 +52,7 @@ room_map = {
         {i: 8, j: 11, destination_id: 0, new_x: 30 * 14, new_y: 30 * 7}
     ],
     'objects': [
-        //test_canvas
+        test_canvas
     ]
 }
 
@@ -83,7 +83,7 @@ home_map = {
     ],
     'objects': [
         old_man_1,
-        //stoner_house_sign
+        stoner_house_sign
     ]
 
 }

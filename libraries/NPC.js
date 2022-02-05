@@ -39,7 +39,7 @@ class NPC extends SpriteCharacter {
         }
     }
     
-    interact() {
+    interact() { // currently copy of TextObject.interact
         var sample = this.dialogue[rand_int(this.dialogue.length)]
         this.world.text_instance = new Text(sample, this.name)
         this.world.text_instance.display_text()
