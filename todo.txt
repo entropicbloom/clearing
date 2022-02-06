@@ -1,6 +1,10 @@
 make global variable handling consistent
     - maybe add all to world object
 
-fix collisions
+make collisions closer
 
 4-step walking
+
+scrolling map
+
+buddhabrot

@@ -1,3 +1,14 @@
+let tiles_png;
+let sprites_png;
+let world;
+
+let CHAR_SPRITES_CONFIG = {
+    'offset': 16,
+    'border': 0,
+    'colors': ['red', 'blue', 'green', 'brown'],
+    'color_offset': 8
+};
+
 /*
 OUTDOORS
 0: ground
@@ -68,8 +79,7 @@ INSIDE
 
 
 
-var env_tiles = {
-    'image': 'tiles',
+let ENV_TILES_CONFIG = {
     'offset': 17,
     'border': 1,
     'mapping': {

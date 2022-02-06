@@ -19,7 +19,7 @@ function setup() {
   
   char_sprite_arr = load_tile_arr(40, 40, CHAR_SPRITES_CONFIG, sprites_png);
   
-  current_env = new GridEnvironment(world, env_tiles, home_map);
+  current_env = new GridEnvironment(world, ENV_TILES_CONFIG, home_map);
 
   
   player = new SpriteCharacter(world,
@@ -76,7 +76,7 @@ function key_action(key) {
 
         if (passage != null) {
             env_dict = map_registry[passage.destination_id];
-            world.current_env = new GridEnvironment(world, env_tiles, env_dict);
+            world.current_env = new GridEnvironment(world, ENV_TILES_CONFIG, env_dict);
             world.current_env.draw_environment();
             world.current_env.draw_contents();
             world.player.x = passage.new_x
@@ -131,6 +131,7 @@ function draw_scene() {
     world.player.draw_object();
 }
             
-    
-
-
+function mouseClicked() {
+    grid_pos = world.current_env.to_grid_coordinates({x: mouseX, y: mouseY})
+    console.log(grid_pos)
+}

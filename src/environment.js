@@ -118,7 +118,7 @@ class GridEnvironment extends Environment {
     tile_is_walkable(tile, object) {
         // check tile type
         if (tile.i > width / this.grid_size - 1 || tile.i < 0 || tile.j > height / this.grid_size - 1 || tile.j < 0) {
-            return False;
+            return false;
         }
         var tile_type = this.grid_map['tiles'][tile.j][tile.i];
         var is_walkable = this.tile_dict['walkability'].includes(tile_type);

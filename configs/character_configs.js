@@ -61,7 +61,7 @@ old_man_1 = new NPC(
     25, // object_height
     5, // step_size
     old_man_sprites, // char_sprites
-    'red',
+    'brown',
     [                                       // dialogue
         ['Ah..', 'Good to see you.'],
         ['Ugh'],
@@ -100,8 +100,36 @@ stoner_dude_1 = new NPC(
     stoner_dude_sprites,
     'green',
     [
-        ["What's good."],
-        ["Check out my Mimosa."] 
+        ['My two feet feel like one single object in consciousness.'],
+        ['The auto correction due to redundancies in language is fascinating, even for whole phrases.'],
+        ['Much more effortlessly present'],
+        ['Alles existiert in mir'],
+        ['Consciousness is a graph of possible experiences', 'Subgraphs are conscious?',
+         'Edge contraction makes more complex conscious experience'],
+        ['I can look deeper into a sensation, feeling'],
+        ['Me and the universe are like layers in an onion intertwined'],
+        ['Being high is like being overpowered in mediation'],
+        ['All selfish acts are signs of love for your future self. Narcissism?'],
+        ['Reality is what persists in consciousness'],
+        ['Pay attention to the drums in motherboard'],
+        ['The words just try to capture a feeling'],
+        ['One conscious experience is not flat in the time dimension'],
+        ['Every atom is doing its best to produce consciousness, if they do'],
+        ["Distances don't exist, try to feel them"],
+        ['My legs being together in physical reality makes them the same object in consciousness',
+         'Objects in consciousness being shared and carried by both legs'],
+        ['When visualizing something, the imagination is very limited as it must portray it viewed from a certain perspective',
+         'Perspective is ego'],
+        ['The less abstract layers of consciousness are revealed on substances'],
+        ["I can feel the space between my legs, it's all one object, including the legs"],
+        ['Love = appreciate fully the presence of someone'],
+        ['If consciousness is like a deep neural network',
+        'then getting hi or meditating is like experiencing the earlier (less abstract) layers'],
+        ['What I see and feel and here is the best representation of the associated neurons firing'],
+        ["It's a pain to respond to thoughts, don't bother.",
+         'Even when the ego says please me please me, tell me everything will be ok etc.'],
+         ["Is crazy that we see it visual field when it's dark.",
+          "The weird patterns are probably feedback signals into v cortex of what the brain expects"]
     ],
     'Stoner dude',
 )
