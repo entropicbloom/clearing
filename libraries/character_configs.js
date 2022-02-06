@@ -100,7 +100,8 @@ stoner_dude_1 = new NPC(
     stoner_dude_sprites,
     'green',
     [
-        ["What's good"]  
+        ["What's good."],
+        ["Check out my Mimosa."] 
     ],
     'Stoner dude',
 )

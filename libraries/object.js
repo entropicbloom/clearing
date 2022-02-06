@@ -25,4 +25,15 @@ var WorldObject = class WorldObject {
     get_rect_points() {}
     
     interact() {}
+
+    get_rect_points() {
+        var rect_points = [
+            {x: Math.floor(this.x + this.object_width / 2), y: Math.floor(this.y + this.object_height / 2)},
+            {x: Math.floor(this.x - this.object_width / 2), y: Math.floor(this.y + this.object_height / 2)},
+            {x: Math.floor(this.x + this.object_width / 2), y: Math.floor(this.y - this.object_height / 2)},
+            {x: Math.floor(this.x - this.object_width / 2), y: Math.floor(this.y - this.object_height / 2)}
+        ];
+        
+        return rect_points;
+    }
 }

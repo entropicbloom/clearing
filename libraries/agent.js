@@ -51,17 +51,6 @@ var Agent = class Agent extends WorldObject {
         fill(255, 255, 255);
         circle(this.get_x(), this.get_y(), this.object_height);
     }
-    
-    get_rect_points() {
-        var rect_points = [
-            {x: Math.floor(this.x + this.object_width / 2), y: Math.floor(this.y + this.object_height / 2)},
-            {x: Math.floor(this.x - this.object_width / 2), y: Math.floor(this.y + this.object_height / 2)},
-            {x: Math.floor(this.x + this.object_width / 2), y: Math.floor(this.y - this.object_height / 2)},
-            {x: Math.floor(this.x - this.object_width / 2), y: Math.floor(this.y - this.object_height / 2)}
-        ];
-        
-        return rect_points;
-    }
 }
 
 

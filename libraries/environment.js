@@ -149,12 +149,20 @@ class GridEnvironment extends Environment {
     objects_on_tile(tile) {
         var objects_on_tile_list = [];
         var extended_objects = this.objects.concat([this.world.player]);
+
+        // iterate through all objects in environment
         for (var i = 0; i < extended_objects.length; i++) {
             
             var object = extended_objects[i];
-            var object_tile = this.to_grid_coordinates({x: object.x, y: object.y});
-            if (tile.i == object_tile.i && tile.j == object_tile.j) {
-                objects_on_tile_list.push(object);
+            var object_tiles = this.get_covered_tiles(object)
+
+            // iterate through all tiles covered by current object
+            for (var tile_idx = 0; tile_idx < object_tiles.length; tile_idx++) {
+                var object_tile = object_tiles[tile_idx]
+                if (tile.i == object_tile.i && tile.j == object_tile.j) {
+                    objects_on_tile_list.push(object);
+                    break;
+                }
             }
         }
         return objects_on_tile_list;
