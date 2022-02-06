@@ -66,18 +66,21 @@ var Agent = class Agent extends WorldObject {
 
 var SpriteCharacter = class SpriteCharacter extends Agent {
     
-    constructor(world, x, y, object_width, object_height, step_size, char_sprites) {
+    constructor(world, x, y, object_width, object_height, step_size, char_sprites, color) {
         super(world, x, y, object_width, object_height, step_size);
         this.char_sprites = char_sprites;
+        this.color = color
     }
     
     draw_object() {
         var step_nr = this.step % 2;
 
-        var char_sprite_config = this.char_sprites.step_sprites[step_nr][this.orientation];
-        var current_sprite = this.world.char_sprite_arr[char_sprite_config.i][char_sprite_config.j];
+        var char_sprites_at_step = this.char_sprites.step_sprites[step_nr][this.orientation];
+        var color_offset = this.get_color_offset()
+
+        var current_sprite = this.world.char_sprite_arr[char_sprites_at_step.i + color_offset][char_sprites_at_step.j];
         
-        if (char_sprite_config.mirror) {
+        if (char_sprites_at_step.mirror) {
             push();
             scale(-1,1);
             image(current_sprite, -this.x - this.object_width / 2, this.y - this.object_height / 2, this.object_width, this.object_height);
@@ -85,6 +88,11 @@ var SpriteCharacter = class SpriteCharacter extends Agent {
         } else {
             image(current_sprite, this.x - this.object_width / 2, this.y - this.object_height / 2, this.object_width, this.object_height);
         }
+    }
+
+    get_color_offset() {
+        var color_idx = CHAR_SPRITES_CONFIG.colors.indexOf(this.color)
+        return color_idx * CHAR_SPRITES_CONFIG.color_offset
     }
 }
     

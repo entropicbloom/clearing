@@ -17,7 +17,7 @@ function setup() {
   world = new World();
   
   
-  char_sprite_arr = load_tile_arr(10, 10, char_sprites, sprites_png);
+  char_sprite_arr = load_tile_arr(40, 40, CHAR_SPRITES_CONFIG, sprites_png);
   
   current_env = new GridEnvironment(world, env_tiles, home_map);
 
@@ -28,7 +28,8 @@ function setup() {
                                25, // width
                                25, // height
                                5, // step size
-                               player_sprites);
+                               player_sprites,
+                               'blue');
   world.player = player;
   world.char_sprite_arr = char_sprite_arr;
   world.current_env = current_env;

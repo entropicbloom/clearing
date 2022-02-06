@@ -33,6 +33,26 @@ old_man_sprites = {
     ]
 }
 
+
+stoner_dude_sprites = {
+    step_sprites: [
+        {
+            'down': {i: 1, j: 19, mirror: false},
+            'up': {i: 2, j: 19, mirror: false},
+            'left': {i: 3, j: 19, mirror: false},
+            'right': {i: 3, j: 19, mirror: true}
+        },
+        {
+            'down': {i: 4, j: 19, mirror: false},
+            'up': {i: 5, j: 19, mirror: false},
+            'left': {i: 6, j: 19, mirror: false},
+            'right': {i: 6, j: 19, mirror: true}
+        }
+    ]
+}
+
+
+
 old_man_1 = new NPC(
     world,
     300, // x
@@ -41,6 +61,7 @@ old_man_1 = new NPC(
     25, // object_height
     10, // step_size
     old_man_sprites, // char_sprites
+    'red',
     [                                       // dialogue
         ['Ah..', 'Good to see you.'],
         ['Ugh'],
@@ -69,13 +90,15 @@ old_man_1 = new NPC(
     'Old man' // name
 )
 
-stoner_dude_config_1 = new NPC(
+stoner_dude_1 = new NPC(
     world,
     200,
     200,
     25,
     25,
     10,
+    stoner_dude_sprites,
+    'green',
     [
         ["What's good"]  
     ],

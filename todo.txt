@@ -1,0 +1,6 @@
+make global variable handling consistent
+    - maybe add all to world object
+
+fix collisions
+
+2-step walking

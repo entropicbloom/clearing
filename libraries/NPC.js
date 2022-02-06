@@ -3,13 +3,6 @@ function rand_int(max_int) {
     return Math.floor(Math.random() * max_int)
 }
 
-let char_sprites = {
-    'image': sprites_png,
-    'offset': 16,
-    'border': 0,
-}
-
-
 class NPC extends SpriteCharacter {
     
     
@@ -21,8 +14,8 @@ class NPC extends SpriteCharacter {
         3: 'right'
     }
     
-    constructor(world, x, y, object_width, object_height, step_size, char_sprites, dialogue, name) {
-        super(world, x, y, object_width, object_height, step_size, char_sprites)
+    constructor(world, x, y, object_width, object_height, step_size, char_sprites, color, dialogue, name) {
+        super(world, x, y, object_width, object_height, step_size, char_sprites, color)
         this.dialogue = dialogue
         this.name = name
     }

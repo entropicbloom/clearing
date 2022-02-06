@@ -24,6 +24,7 @@ stoner_room_map = {
         {i: 8, j: 11, destination_id: 0, new_x: 30 * 10, new_y: 30 * 13}
     ],
     'objects': [
+        stoner_dude_1
     ]
 }
 
