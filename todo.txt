@@ -3,4 +3,4 @@ make global variable handling consistent
 
 fix collisions
 
-2-step walking
+4-step walking

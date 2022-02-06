@@ -25,7 +25,7 @@ var Agent = class Agent extends WorldObject {
         this.x = new_location.x
         this.y = new_location.y
         this.orientation = direction;
-        this.step += 1;
+        this.step = (this.step + 1) % 2
         
         if (!this.world.current_env.object_can_pass(this)) {
             this.undo_move(direction);
@@ -43,7 +43,8 @@ var Agent = class Agent extends WorldObject {
         var move_vec = this.move_vec_dict[direction];
         this.x -= move_vec.x;
         this.y -= move_vec.y;
-        this.orientation = direction;
+        this.orientation = direction; // needed??
+        this.step = 1
     }
     
     draw_object() {
