@@ -23,6 +23,16 @@ class Environment {
     object_can_pass(object) {}
 
     check_passage(object) {}
+
+    move_environment(position) {}
+
+    get_i_offset() {return 0}
+    
+    get_j_offset() {return 0}
+
+    get_x_offset() {return this.get_i_offset() * this.grid_size}
+
+    get_y_offset() {return this.get_j_offset() * this.grid_size}
     
     interact(interacting_agent) {}
 }                
@@ -116,8 +126,10 @@ class GridEnvironment extends Environment {
     }
 
     tile_is_walkable(tile, object) {
+        
         // check tile type
-        if (tile.i > width / this.grid_size - 1 || tile.i < 0 || tile.j > height / this.grid_size - 1 || tile.j < 0) {
+        if (tile.i > this.env_width / this.grid_size - 1 || tile.i < 0 ||
+            tile.j > this.env_height / this.grid_size - 1 || tile.j < 0) {
             return false;
         }
         var tile_type = this.grid_map['tiles'][tile.j][tile.i];
@@ -191,5 +203,53 @@ class GridEnvironment extends Environment {
             }
         }
         return null;
+    }
+}
+
+class ScrollingGridEnvironment extends GridEnvironment {
+
+
+    update_offset() {
+        var player_pos = this.world.player.get_position();
+        var player_coords = this.to_grid_coordinates(player_pos);
+        this.i_offset = player_coords.i - parseInt(width / 2 / this.grid_size)
+        this.j_offset = player_coords.j - parseInt(height / 2 / this.grid_size)
+    }
+
+
+    move_environment(position) {
+        background(0, 0, 0)
+        this.update_offset()
+        this.draw_environment()
+    }
+
+    get_i_offset() {return this.i_offset}
+    
+    get_j_offset() {return this.j_offset}
+
+
+    constructor(world, tile_dict, grid_map) {
+        super(world, tile_dict, grid_map)
+        this.update_offset()
+    }
+
+    draw_cell(tile) {
+
+        if (tile.i + this.get_i_offset() >= this.grid_map['tiles'][0].length || 
+            tile.j + this.get_j_offset() >= this.grid_map['tiles'].length ||
+            tile.i + this.get_i_offset() < 0 || tile.j + this.get_j_offset() < 0) {
+            return
+        }
+
+        var tile_type = this.grid_map['tiles'][tile.j + this.get_j_offset()][tile.i + this.get_i_offset()];
+        
+        if (tile_type >= 0) {
+            var tile_coordinates = this.tile_dict['mapping'][tile_type];
+            var tile_img = this.tile_arr[tile_coordinates.x][tile_coordinates.y]; // x and y might be reversed
+            image(tile_img, tile.i * this.grid_size, tile.j * this.grid_size, this.grid_size, this.grid_size);
+        } else {
+            fill(0, 0, 0);
+            square(tile.i * this.grid_size, tile.j * this.grid_size, this.grid_size);
+        }
     }
 }

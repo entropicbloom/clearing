@@ -29,7 +29,10 @@ var Agent = class Agent extends WorldObject {
         
         if (!this.world.current_env.object_can_pass(this)) {
             this.undo_move(direction);
+        } else  {
+            this.world.current_env.move_environment(new_location)
         }
+        
     }
     
     get_new_location(direction, multiplier=1) {
@@ -51,6 +54,10 @@ var Agent = class Agent extends WorldObject {
         fill(255, 255, 255);
         circle(this.get_x(), this.get_y(), this.object_height);
     }
+
+    get_position() {
+        return {x: this.x, y: this.y}
+    }
 }
 
 
@@ -70,13 +77,16 @@ var SpriteCharacter = class SpriteCharacter extends Agent {
 
         var current_sprite = this.world.char_sprite_arr[char_sprites_at_step.i + color_offset][char_sprites_at_step.j];
         
+        var draw_y = this.y - this.object_height / 2 - this.world.current_env.get_y_offset()
         if (char_sprites_at_step.mirror) {
             push();
             scale(-1,1);
-            image(current_sprite, -this.x - this.object_width / 2, this.y - this.object_height / 2, this.object_width, this.object_height);
+            var draw_x = -this.x - this.object_width / 2 + this.world.current_env.get_x_offset()
+            image(current_sprite, draw_x, draw_y, this.object_width, this.object_height);
             pop();
         } else {
-            image(current_sprite, this.x - this.object_width / 2, this.y - this.object_height / 2, this.object_width, this.object_height);
+            var draw_x = this.x - this.object_width / 2 - this.world.current_env.get_x_offset()
+            image(current_sprite, draw_x, draw_y, this.object_width, this.object_height);
         }
     }
 

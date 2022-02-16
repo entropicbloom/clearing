@@ -76,7 +76,11 @@ function key_action(key) {
 
         if (passage != null) {
             env_dict = map_registry[passage.destination_id];
-            world.current_env = new GridEnvironment(world, ENV_TILES_CONFIG, env_dict);
+            if ('scrolling' in env_dict) {
+                world.current_env = new ScrollingGridEnvironment(world, ENV_TILES_CONFIG, env_dict);
+            } else {
+                world.current_env = new GridEnvironment(world, ENV_TILES_CONFIG, env_dict);
+            }
             world.current_env.draw_environment();
             world.current_env.draw_contents();
             world.player.x = passage.new_x
