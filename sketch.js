@@ -136,5 +136,5 @@ function draw_scene() {
             
 function mouseClicked() {
     grid_pos = world.current_env.to_grid_coordinates({x: mouseX, y: mouseY})
-    console.log(grid_pos)
+    console.log(world.current_env.add_offset(grid_pos))
 }
