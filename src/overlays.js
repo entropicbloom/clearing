@@ -27,11 +27,11 @@ class Text {
         
         if (this.header != null) {
             fill(0, 0, 0);
-            text(this.header, 10.0, 390)
+            text(this.header, 10.0, 390);
         }
         
-        fill(50, 50, 50)
-        text(this.text_arr[this.counter], 20.0, 410.0)
+        fill(50, 50, 50);
+        text(this.text_arr[this.counter], 20.0, 410.0);
     }
 
 }

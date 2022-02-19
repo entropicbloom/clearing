@@ -46,11 +46,12 @@ function setup() {
   current_env.draw_environment();
   current_env.draw_contents();
   world.player.draw_object();
-
+  push()
 }
   
 
 function draw() {
+    pop()
     if (touches.length > 0) {
         draw_ctrl_buttons()
         for (var i = 0; i < touches.length; i++) {
@@ -70,6 +71,7 @@ function draw() {
     }
 
     counter += 1
+    push()
 }
 
 function touch_action(touch) {
@@ -85,7 +87,6 @@ function draw_ctrl_buttons() {
 }
 
 function key_action(key) {
-    
 
     var key_direction_map = {
         'w': 'up',
@@ -94,7 +95,7 @@ function key_action(key) {
         'a': 'left'
     };
 
-    if (key in key_direction_map) {
+    if (key in key_direction_map && world.text_instance == null && world.canvas_instance == null) {
         moved = world.player.move(key_direction_map[key]);
 
         var passage = world.current_env.check_passage(world.player);
@@ -117,7 +118,7 @@ function key_action(key) {
     } 
     
     if (key == ' ') {
-        if ((world.text_instance == null) & (world.canvas_instance == null)) {
+        if ((world.text_instance == null) && (world.canvas_instance == null)) {
             world.current_env.interact(world.player);
           return
         }

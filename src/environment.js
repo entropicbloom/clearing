@@ -233,18 +233,18 @@ class ScrollingGridEnvironment extends GridEnvironment {
     move_environment(position) {
         background(0, 0, 0)
         this.update_offset()
+        resetMatrix()
         translate(-(this.world.player.x % this.grid_size), -(this.world.player.y % this.grid_size)) // smooth scrolling
         this.draw_environment()
         this.draw_contents()     
+
     }
 
     update_contents() { // required to maintain translation for map objects
-        push()
-        translate(-(this.world.player.x % this.grid_size), -(this.world.player.y % this.grid_size))
+
         for (var i = 0; i < this.objects.length; i++) {
             this.objects[i].update_object();
         }
-        pop()
     }
 
     get_i_offset() {return this.i_offset}
