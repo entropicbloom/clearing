@@ -90,6 +90,21 @@ old_man_1 = new NPC(
     'Old man' // name
 )
 
+old_man_2 = new NPC(
+    world,
+    300, // x
+    200, // y
+    25, // object_width
+    25, // object_height
+    5, // step_size
+    old_man_sprites, // char_sprites
+    'red',
+    [       
+        ["I'm lost."]
+    ],                      // dialogue
+    'Lost old man' // name
+)
+
 stoner_dude_1 = new NPC(
     world,
     200,
