@@ -75,7 +75,7 @@ home_map = {
     'passages': [
         {i: 13, j: 4, destination_id: 1, new_x: 30 * 8, new_y: 30 * 10},
         {i: 9, j: 11, destination_id: 2, new_x: 30 * 8, new_y: 30 * 10},
-        {i: 19, j: 12, destination_id: 3, new_x: 30 * 2, new_y: 30 * 14}
+        {i: 19, j: 12, destination_id: 3, new_x: 30 * 2, new_y: 30 * 19}
     ],
     'objects': [
         old_man_1,
