@@ -52,9 +52,9 @@ class GridEnvironment extends Environment {
         this.world = world;  // reference to world
         this.tile_dict = tile_dict;  // dictionary defining encoding of tiling textures
         this.grid_map = grid_map;  // dictionary defining current environment map
-        this.env_width = grid_map['width'];  // width of environment in pixels
-        this.env_height = grid_map['height'];  // height of environment in pixels
         this.grid_size = grid_map['grid_size'];  // width and height of one grid cell
+        this.env_width = grid_map['tiles'][0].length * this.grid_size;  // width of environment in pixels
+        this.env_height = grid_map['tiles'].length * this.grid_size; // height of environment in pixels
         this.tile_arr = load_tile_arr(40, 30, tile_dict, tiles_png);  // 2D array containing images of all environment tiles
         
         this.initialize_contents();
