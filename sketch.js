@@ -79,7 +79,7 @@ function key_action(key) {
             } else {
                 world.current_env = new GridEnvironment(world, ENV_TILES_CONFIG, env_dict);
             }
-            //resetMatrix()
+            resetMatrix() // undo effects of scrolling env translation
             world.current_env.draw_environment();
             world.current_env.draw_contents();
             world.player.x = passage.new_x;
