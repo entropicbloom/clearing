@@ -68,6 +68,7 @@ class GridEnvironment extends Environment {
     }
     
     draw_environment() {
+        background(0, 0, 0)
         for (var j_val = 0; j_val < this.grid_map['tiles'].length; j_val++) {
             for (var i_val = 0; i_val < this.grid_map['tiles'][0].length; i_val++) {
                 var tile = {i: i_val, j: j_val}
@@ -89,9 +90,6 @@ class GridEnvironment extends Environment {
             var tile_coordinates = this.tile_dict['mapping'][tile_type];
             var tile_img = this.tile_arr[tile_coordinates.x][tile_coordinates.y];
             image(tile_img, tile_place.i * this.grid_size, tile_place.j * this.grid_size, this.grid_size, this.grid_size);
-        } else {
-            fill(0, 0, 0);
-            square(tile_place.i * this.grid_size, tile_place.j * this.grid_size, this.grid_size);
         }
     }
 
@@ -260,6 +258,7 @@ class ScrollingGridEnvironment extends GridEnvironment {
     }
 
     draw_environment() {
+        background(0, 0, 0)
         for (var j_val = 0; j_val < this.grid_map['tiles'].length; j_val++) {
             for (var i_val = 0; i_val < this.grid_map['tiles'][0].length; i_val++) {
                 var tile = {i: i_val, j: j_val}

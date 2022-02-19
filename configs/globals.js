@@ -2,6 +2,10 @@ let tiles_png;
 let sprites_png;
 let world;
 
+let dir_button_dim = 50
+let dir_button_x_offset = 50
+let dir_button_y_offset = 280
+
 let CHAR_SPRITES_CONFIG = {
     'offset': 16,
     'border': 0,

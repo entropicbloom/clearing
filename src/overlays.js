@@ -94,3 +94,27 @@ class CanvasObject extends WorldObject {
     }
 }
         
+class RectButton {
+    constructor(x_offset, y_offset, button_width, button_height, callback, callback_arg) {
+        this.x_offset = x_offset;
+        this.y_offset = y_offset;
+        this.button_width = button_width;
+        this.button_height = button_height
+        this.callback = callback
+        this.callback_arg = callback_arg
+    }
+
+    try_press(location) {
+        var in_x_range = location.x > this.x_offset && location.x < (this.x_offset + this.button_width)
+        var in_y_range = location.y > this.y_offset && location.y < (this.y_offset + this.button_height)
+        if (in_x_range && in_y_range) {
+            this.callback(this.callback_arg)
+        }
+    }
+
+    draw_button() {
+        noFill()
+        stroke(255, 255, 255)
+        rect(this.x_offset, this.y_offset, this.button_width, this.button_height)
+    }
+}
