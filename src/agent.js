@@ -29,9 +29,12 @@ var Agent = class Agent extends WorldObject {
         
         if (!this.world.current_env.object_can_pass(this)) {
             this.undo_move(direction);
-        } else  {
-            this.world.current_env.move_environment(new_location)
         }
+        if (this == this.world.player) {
+            this.world.current_env.move_environment(new_location)
+            this.world.player.draw_object()
+        }
+        
         
     }
     

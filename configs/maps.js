@@ -115,6 +115,7 @@ fields_map = {
         {i: 0, j: 14, destination_id: 0, new_x: 30 * 18, new_y: 30 * 13}
     ],
     'objects': [
+        old_man_1
     ],
     'scrolling': true
 

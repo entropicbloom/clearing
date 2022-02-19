@@ -33,6 +33,14 @@ class Environment {
     get_x_offset() {return this.get_i_offset() * this.grid_size}
 
     get_y_offset() {return this.get_j_offset() * this.grid_size}
+
+    add_offset(tile) {
+        return {i: tile.i + this.get_i_offset(), j: tile.j + this.get_j_offset()}
+    }
+
+    subtract_offset(tile) {
+        return {i: tile.i - this.get_i_offset(), j: tile.j - this.get_j_offset()}
+    }
     
     interact(interacting_agent) {}
 }                
@@ -62,35 +70,41 @@ class GridEnvironment extends Environment {
     draw_environment() {
         for (var j_val = 0; j_val < this.grid_map['tiles'].length; j_val++) {
             for (var i_val = 0; i_val < this.grid_map['tiles'][0].length; i_val++) {
-                this.draw_cell({i: i_val, j: j_val});
+                var tile = {i: i_val, j: j_val}
+                this.draw_cell(tile, tile);
             }
         }
     }
     
-    draw_cell(tile) {
+    draw_cell(tile, tile_place) {
+
+        if (tile.i >= this.grid_map['tiles'][0].length || tile.j >= this.grid_map['tiles'].length ||
+            tile.i < 0 || tile.j < 0) {
+            return
+        }
 
         var tile_type = this.grid_map['tiles'][tile.j][tile.i];
         
         if (tile_type >= 0) {
             var tile_coordinates = this.tile_dict['mapping'][tile_type];
-            var tile_img = this.tile_arr[tile_coordinates.x][tile_coordinates.y]; // x and y might be reversed
-            image(tile_img, tile.i * this.grid_size, tile.j * this.grid_size, this.grid_size, this.grid_size);
+            var tile_img = this.tile_arr[tile_coordinates.x][tile_coordinates.y];
+            image(tile_img, tile_place.i * this.grid_size, tile_place.j * this.grid_size, this.grid_size, this.grid_size);
         } else {
             fill(0, 0, 0);
-            square(tile.i * this.grid_size, tile.j * this.grid_size, this.grid_size);
+            square(tile_place.i * this.grid_size, tile_place.j * this.grid_size, this.grid_size);
         }
     }
 
     redraw_at_object(object) {
         var covered_tiles = this.get_covered_tiles(object);
         for (var i = 0; i < covered_tiles.length; i++) {
-            this.draw_cell(covered_tiles[i]);
+            this.draw_cell(covered_tiles[i], this.subtract_offset(covered_tiles[i]));
         }
     }
     
     redraw_at(position) {
         var tile = this.to_grid_coordinates(position);
-        this.draw_cell(tile);
+        this.draw_cell(tile, tile);
     }
     
     to_grid_coordinates(position) {
@@ -108,7 +122,8 @@ class GridEnvironment extends Environment {
 
         for (var i = 0; i < rect_points.length; i++) {
             var rect_points_tile = this.to_grid_coordinates(rect_points[i]);
-
+            
+            // get rect points of rectangle enclosing all covered tiles
             min_i = Math.min(min_i, rect_points_tile.i);
             min_j = min(min_j, rect_points_tile.j);
             max_i = max(max_i, rect_points_tile.i);
@@ -221,7 +236,9 @@ class ScrollingGridEnvironment extends GridEnvironment {
         background(0, 0, 0)
         this.update_offset()
         this.draw_environment()
+        this.draw_contents()     
     }
+
 
     get_i_offset() {return this.i_offset}
     
@@ -233,23 +250,12 @@ class ScrollingGridEnvironment extends GridEnvironment {
         this.update_offset()
     }
 
-    draw_cell(tile) {
-
-        if (tile.i + this.get_i_offset() >= this.grid_map['tiles'][0].length || 
-            tile.j + this.get_j_offset() >= this.grid_map['tiles'].length ||
-            tile.i + this.get_i_offset() < 0 || tile.j + this.get_j_offset() < 0) {
-            return
-        }
-
-        var tile_type = this.grid_map['tiles'][tile.j + this.get_j_offset()][tile.i + this.get_i_offset()];
-        
-        if (tile_type >= 0) {
-            var tile_coordinates = this.tile_dict['mapping'][tile_type];
-            var tile_img = this.tile_arr[tile_coordinates.x][tile_coordinates.y]; // x and y might be reversed
-            image(tile_img, tile.i * this.grid_size, tile.j * this.grid_size, this.grid_size, this.grid_size);
-        } else {
-            fill(0, 0, 0);
-            square(tile.i * this.grid_size, tile.j * this.grid_size, this.grid_size);
+    draw_environment() {
+        for (var j_val = 0; j_val < this.grid_map['tiles'].length; j_val++) {
+            for (var i_val = 0; i_val < this.grid_map['tiles'][0].length; i_val++) {
+                var tile = {i: i_val, j: j_val}
+                this.draw_cell(this.add_offset(tile), tile);
+            }
         }
     }
 }
