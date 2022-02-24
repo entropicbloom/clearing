@@ -1,6 +1,7 @@
 
 let pressed_key;
 let counter = 0
+let player_time_constant = 5
 class World {}
 
 function preload() {
@@ -62,7 +63,7 @@ function draw() {
     }
 
     // if key pressed, and if counter condition met, execute key actions
-    if (counter % 5 == 0 && pressed_key != null) {
+    if (counter % player_time_constant == 0 && pressed_key != null) {
         key_action(pressed_key)
     }   
 
