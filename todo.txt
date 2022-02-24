@@ -4,7 +4,3 @@ make global variable handling consistent
 make collisions closer
 
 4-step walking
-
-scrolling map
-
-buddhabrot

@@ -55,9 +55,14 @@ class TextObject extends WorldObject{
 
 class Canvas {
     
-    constructor(canvas_width, canvas_height) {
+    constructor(canvas_width, canvas_height, refresh_background) {
         this.canvas_width = canvas_width
         this.canvas_height = canvas_height
+        this.refresh_background = refresh_background
+        this.counter = 0
+    }
+    
+    reset() {
         this.counter = 0
     }
         
@@ -65,9 +70,12 @@ class Canvas {
     
     draw_canvas() {
         
-        fill(255, 255, 255)
-        rectMode(CENTER)
-        rect(width / 2, height / 2, this.canvas_width, this.canvas_height)
+        
+        if (this.refresh_background == true || this.counter == 0) {
+            fill(255, 255, 255)
+            rectMode(CENTER)
+            rect(width / 2, height / 2, this.canvas_width, this.canvas_height)
+        }
         rectMode(CORNER)
         
         push()
@@ -90,6 +98,7 @@ class CanvasObject extends WorldObject {
     }
         
     interact() {
+        this.canvas.reset()
         this.world.canvas_instance = this.canvas
     }
 }

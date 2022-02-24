@@ -33,7 +33,7 @@ let test_canvas = new CanvasObject (
     120, // y
     30, // object_width
     30, // object_height
-    new TestCanvas(200, 200, 20) // canvas
+    new BuddhabrotCanvas(200, 200, 20, false)
 );
 
 let stoner_house_sign = new TextObject(
