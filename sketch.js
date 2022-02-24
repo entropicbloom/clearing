@@ -52,6 +52,8 @@ function setup() {
 
 function draw() {
     pop()
+
+    // draw touch buttons and execute if pressed
     if (touches.length > 0) {
         draw_ctrl_buttons()
         for (var i = 0; i < touches.length; i++) {
@@ -59,13 +61,17 @@ function draw() {
         }
     }
 
+    // if key pressed, and if counter condition met, execute key actions
     if (counter % 5 == 0 && pressed_key != null) {
         key_action(pressed_key)
     }   
 
+    // update environment contents if no text boxes / canvases are displayed
     if (world.text_instance == null) {
         world.current_env.update_contents();
     }
+
+    // if it exists, update current canvas
     if (world.canvas_instance != null) {
         world.canvas_instance.draw_canvas();
     }
