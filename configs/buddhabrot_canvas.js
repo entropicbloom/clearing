@@ -14,10 +14,10 @@ class BuddhabrotCanvas extends Canvas {
         return {x: x_val, y: y_val}
    }
 
-    to_pixels(x, y, zoom) {
-        var i_val = (x * zoom + 0.5) * this.canvas_width / 2 + float(this.canvas_width) / 2
-        var j_val = y * zoom * this.canvas_height / 2 + float(this.canvas_height) / 2
-        return {u: parseInt(i_val), v: parseInt(j_val)}
+   to_pixels(x, y, zoom) {
+        var v_val = (x * zoom + 0.5) * this.canvas_height / 2 + parseFloat(this.canvas_height) / 2
+        var u_val = y * zoom * this.canvas_width / 2 + parseFloat(this.canvas_width) / 2
+        return {u: parseInt(u_val), v: parseInt(v_val)}
     }
         
     iteration(z, c) {
@@ -42,7 +42,7 @@ class BuddhabrotCanvas extends Canvas {
             if (pixels.u >= 1 && pixels.u < this.canvas_width - 1 && pixels.v >= 1 && pixels.v < this.canvas_height - 1) {
                 //arr[pixels.u][pixels.v][color_num] += 1
                 //arr[pixels.u][pixels.v] += 1
-                stroke(color(0, 0, 0, 100))
+                stroke(color(0, 0, 0, 50))
                 point(pixels.u, pixels.v)
             }
         }
