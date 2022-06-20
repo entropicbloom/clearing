@@ -108,18 +108,20 @@ function key_action(key) {
         var passage = world.current_env.check_passage(world.player);
 
         if (passage != null) {
+            world.player.x = passage.new_x;
+            world.player.y = passage.new_y;
+
             env_dict = map_registry[passage.destination_id];
             if ('scrolling' in env_dict) {
                 world.current_env = new ScrollingGridEnvironment(world, ENV_TILES_CONFIG, env_dict);
+                world.current_env.update_offset()
             } else {
                 world.current_env = new GridEnvironment(world, ENV_TILES_CONFIG, env_dict);
             }
             resetMatrix() // undo effects of scrolling env translation
-            world.current_env.draw_environment();
-            world.current_env.draw_contents();
-            world.player.x = passage.new_x;
-            world.player.y = passage.new_y;
-            world.player.draw_object();
+            push()
+            
+            draw_scene()
         }
         return
     } 
