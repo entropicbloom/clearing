@@ -41,6 +41,15 @@ OUTDOORS
 23: mountian wall right
 24: mountain top rear
 56: sign
+57: cave entrance
+58: purple cave floor
+59: purple cave exit
+60: purple cave water
+61: purple cave water left edge
+62: purple cave water left edge
+63: purple cave water upper edge
+64: purple cave stone
+
 
 
 HOUSES
@@ -143,9 +152,17 @@ let ENV_TILES_CONFIG = {
         53: {x: 6, y: 20},
         54: {x: 7, y: 20},
         55: {x: 8, y: 20},
-        56: {x: 9, y: 1}
+        56: {x: 9, y: 1},
+        57: {x: 1, y: 14},
+        58: {x: 0, y: 15},
+        59: {x: 2, y: 15},
+        60: {x: 4, y: 19},
+        61: {x: 3, y: 19},
+        62: {x: 5, y: 19},
+        63: {x: 4, y: 18},
+        64: {x: 1, y: 16},
         
     },
-    'walkability': [0, 1, 2, 3, 4, 7, 29, 32]
+    'walkability': [0, 1, 2, 3, 4, 7, 29, 32, 57, 58, 59]
     
 }
