@@ -1,6 +1,8 @@
 make global variable handling consistent
     - maybe add all to world object
 
+fix text boxes in scrolling environments
+
 make collisions closer
 
 4-step walking
