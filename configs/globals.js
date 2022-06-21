@@ -46,9 +46,20 @@ OUTDOORS
 59: purple cave exit
 60: purple cave water
 61: purple cave water left edge
-62: purple cave water left edge
+62: purple cave water right edge
 63: purple cave water upper edge
 64: purple cave stone
+65: purple cave mountain top
+66: purple cave mountain upper end
+67: purple cave mountain upper left corner
+68: purple cave mountain upper right corner
+69: purple cave mountain left wall
+70: purple cave mountain right wall
+71: purple cave mountain lower wall
+72: purple cave mountain lower left wall
+73: purple cave mountain lower right wall
+74: purple cave mountain entrance into further cave
+
 
 
 
@@ -161,8 +172,18 @@ let ENV_TILES_CONFIG = {
         62: {x: 5, y: 19},
         63: {x: 4, y: 18},
         64: {x: 1, y: 16},
+        65: {x: 1, y: 18},
+        66: {x: 1, y: 17},
+        67: {x: 0, y: 17},
+        68: {x: 2, y: 17},
+        69: {x: 0, y: 18},
+        70: {x: 2, y: 18},
+        71: {x: 1, y: 19},
+        72: {x: 0, y: 19},
+        73: {x: 2, y: 19},
+        74: {x: 1, y: 20}
         
     },
-    'walkability': [0, 1, 2, 3, 4, 7, 29, 32, 57, 58, 59]
+    'walkability': [0, 1, 2, 3, 4, 7, 29, 32, 57, 58, 59, 74]
     
 }

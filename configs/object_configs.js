@@ -45,10 +45,10 @@ let stoner_house_sign = new TextObject(
     [['Stoner House']] // dialogue
 );
 
-let cave_sign = new TextObject(
+let lake_sign = new TextObject(
     world,
     30 * 7,
-    30 * 12,
+    30 * 11,
     30,
     30,
     [['Lake Zürich, 18.6.2022, Evening in Nature']] // dialogue

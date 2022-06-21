@@ -56,7 +56,7 @@ stoner_dude_sprites = {
 old_man_1 = new NPC(
     world,
     300, // x
-    100, // y
+    150, // y
     25, // object_width
     25, // object_height
     5, // step_size
@@ -206,7 +206,7 @@ stoner_dude_1 = new NPC(
     'Stoner dude',
 )
 
-stoner_dude_2 = new NPC(
+stoner_dude_lake = new NPC(
     world,
     250,
     200,
