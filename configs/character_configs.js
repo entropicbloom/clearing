@@ -208,8 +208,8 @@ stoner_dude_1 = new NPC(
 
 stoner_dude_lake = new NPC(
     world,
-    250,
-    200,
+    360,
+    360,
     25,
     25,
     5,

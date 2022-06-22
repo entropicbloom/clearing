@@ -5,8 +5,11 @@ let player_time_constant = 5
 class World {}
 
 function preload() {
-  tiles_png = loadImage("data/tiles.png")
-  sprites_png = loadImage("data/character_sprites.png")
+    pictures = {
+        'tiles_png': loadImage("data/tiles.png"),
+        'sprites_png': loadImage("data/character_sprites.png"),
+        'lake_jpg': loadImage("data/lake.jpg")
+    }
 }
 
 let ctrl_buttons = [
@@ -26,10 +29,10 @@ function setup() {
   world = new World();
   
   
-  char_sprite_arr = load_tile_arr(40, 40, CHAR_SPRITES_CONFIG, sprites_png);
+  char_sprite_arr = load_tile_arr(40, 40, CHAR_SPRITES_CONFIG, pictures['sprites_png']);
   player = new SpriteCharacter(world,
-                               30 * 15, // x
-                               30 * 10, // y
+                               30 * 10, // x
+                               30 * 13, // y
                                25, // width
                                25, // height
                                5, // step size
@@ -38,7 +41,7 @@ function setup() {
   world.player = player;
   world.char_sprite_arr = char_sprite_arr;
 
-  current_env = new ScrollingGridEnvironment(world, ENV_TILES_CONFIG, fields_map);
+  current_env = new ScrollingGridEnvironment(world, ENV_TILES_CONFIG, home_map);
   world.current_env = current_env;
   
   
@@ -51,7 +54,6 @@ function setup() {
 
 function draw() {
     pop()
-
     // draw touch buttons and execute if pressed
     if (touches.length > 0) {
         draw_ctrl_buttons()

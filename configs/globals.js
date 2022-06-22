@@ -1,5 +1,4 @@
-let tiles_png;
-let sprites_png;
+let pictures;
 let world;
 
 let dir_button_dim = 50
@@ -59,6 +58,7 @@ OUTDOORS
 72: purple cave mountain lower left wall
 73: purple cave mountain lower right wall
 74: purple cave mountain entrance into further cave
+75: yellow outdoor floor
 
 
 
@@ -181,9 +181,10 @@ let ENV_TILES_CONFIG = {
         71: {x: 1, y: 19},
         72: {x: 0, y: 19},
         73: {x: 2, y: 19},
-        74: {x: 1, y: 20}
+        74: {x: 1, y: 20},
+        75: {x: 11, y: 8}
         
     },
-    'walkability': [0, 1, 2, 3, 4, 7, 29, 32, 57, 58, 59, 74]
+    'walkability': [0, 1, 2, 3, 4, 7, 29, 32, 57, 58, 59, 74, 75]
     
 }

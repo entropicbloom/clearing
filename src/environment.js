@@ -2,6 +2,10 @@ Array.range = (start, end) => Array.from({length: (end - start)}, (v, k) => k + 
 
 class Environment {
 
+    constructor(bg_image_name) {
+        this.bg_image = pictures[bg_image_name]
+    }
+
     initialize_contents() {}
     
     update_contents() {
@@ -13,6 +17,14 @@ class Environment {
     draw_contents() {
         for (var i = 0; i < this.objects.length; i++) {
             this.objects[i].draw_object();
+        }
+    }
+
+    draw_background() {
+        if (this.bg_image != null) {
+            image(this.bg_image, 0, 0, this.env_width, this.env_height)
+        } else {
+            background(0, 0, 0)
         }
     }
     
@@ -48,14 +60,14 @@ class Environment {
 class GridEnvironment extends Environment {
 
     constructor(world, tile_dict, grid_map) {
-        super()
+        super(grid_map['bg_image'])
         this.world = world;  // reference to world
         this.tile_dict = tile_dict;  // dictionary defining encoding of tiling textures
         this.grid_map = grid_map;  // dictionary defining current environment map
         this.grid_size = grid_map['grid_size'];  // width and height of one grid cell
         this.env_width = grid_map['tiles'][0].length * this.grid_size;  // width of environment in pixels
         this.env_height = grid_map['tiles'].length * this.grid_size; // height of environment in pixels
-        this.tile_arr = load_tile_arr(40, 30, tile_dict, tiles_png);  // 2D array containing images of all environment tiles
+        this.tile_arr = load_tile_arr(40, 30, tile_dict, pictures['tiles_png']);  // 2D array containing images of all environment tiles
         
         this.initialize_contents();
     }
@@ -68,7 +80,7 @@ class GridEnvironment extends Environment {
     }
     
     draw_environment() {
-        background(0, 0, 0)
+        this.draw_background()
         for (var j_val = 0; j_val < this.grid_map['tiles'].length; j_val++) {
             for (var i_val = 0; i_val < this.grid_map['tiles'][0].length; i_val++) {
                 var tile = {i: i_val, j: j_val}
@@ -231,7 +243,7 @@ class ScrollingGridEnvironment extends GridEnvironment {
 
 
     move_environment(position) {
-        background(0, 0, 0)
+        this.draw_background()
         this.update_offset()
         resetMatrix()
         translate(-(this.world.player.x % this.grid_size), -(this.world.player.y % this.grid_size)) // smooth scrolling
@@ -258,7 +270,7 @@ class ScrollingGridEnvironment extends GridEnvironment {
     }
 
     draw_environment() {
-        background(0, 0, 0)
+        this.draw_background()
         for (var j_val = 0; j_val < this.grid_map['tiles'].length; j_val++) {
             for (var i_val = 0; i_val < this.grid_map['tiles'][0].length; i_val++) {
                 var tile = {i: i_val, j: j_val}
