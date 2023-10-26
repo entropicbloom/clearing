@@ -156,6 +156,7 @@ function keyPressed() {
         pressed_key = key
     }
     key_action(key)
+    
 }
 
 function keyReleased() {

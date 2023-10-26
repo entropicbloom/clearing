@@ -10,6 +10,7 @@ class Text {
         this.text_arr = text_arr;
         this.counter = 0;
         this.header = header;
+        this.box_width = 550;
     }
         
     more_text_available() {
@@ -20,18 +21,20 @@ class Text {
         this.counter += 1;
     }
 
+    
+
     display_text() {
         fill(255, 220, 235);
-        rect(0, 369, 599, 80);
+        rect(25, 369, this.box_width, 80);
         
         
         if (this.header != null) {
             fill(0, 0, 0);
-            text(this.header, 10.0, 390);
+            text(this.header, 35.0, 390);
         }
         
         fill(50, 50, 50);
-        text(this.text_arr[this.counter], 20.0, 410.0);
+        text(this.text_arr[this.counter], 35.0, 410.0, this.box_width - 20);
     }
 
 }
