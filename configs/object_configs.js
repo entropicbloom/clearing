@@ -54,6 +54,16 @@ let lake_sign = new TextObject(
     [['Lake Zürich, 18.6.2022, Evening in Nature']]
 );
 
+// The whirlpool
+let whirlpool = new LinkObject(
+    world,
+    20, // tile_i
+    8,  // tile_j
+    25,
+    25,
+    'https://entropicbloom.com'
+);
+
 // Mysterious clearing objects
 let clearing_stone = new TextObject(
     world,

@@ -46,7 +46,7 @@ class TextObject extends WorldObject{
         this.dialogue = dialogue
         this.name = name
     }
-    
+
     interact() {
         var sample = this.dialogue[rand_int(this.dialogue.length)]
         this.world.text_instance = new Text(sample, this.name)
@@ -54,6 +54,18 @@ class TextObject extends WorldObject{
         this.world.text_instance.next()
     }
 
+}
+
+class LinkObject extends WorldObject {
+
+    constructor(world, tile_i, tile_j, object_width, object_height, url) {
+        super(world, tile_i, tile_j, object_width, object_height)
+        this.url = url
+    }
+
+    interact() {
+        window.open(this.url, '_blank')
+    }
 }
 
 class Canvas {

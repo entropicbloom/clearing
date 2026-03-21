@@ -122,7 +122,8 @@ fields_map = {
     'objects': [
         old_man_2,
         clearing_stone,
-        clearing_rocks
+        clearing_rocks,
+        whirlpool
     ],
     'scrolling': true
 
