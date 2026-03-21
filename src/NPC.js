@@ -4,23 +4,21 @@ function rand_int(max_int) {
 }
 
 class NPC extends SpriteCharacter {
-    
-    
-    walk_prob = 1
+
     int_to_direction = {
         0: 'up',
         1: 'down',
         2: 'left',
         3: 'right'
     }
-    
+
     constructor(world, x, y, object_width, object_height, step_size, char_sprites, color, dialogue, name) {
         super(world, x, y, object_width, object_height, step_size, char_sprites, color)
         this.dialogue = dialogue
         this.name = name
-        this.step_count_down_start = 12
+        this.step_count_down_start = NPC_STEP_COUNTDOWN
         this.step_count_down = this.step_count_down_start
-        this.walk_prob = 0.1
+        this.walk_prob = NPC_WALK_PROB
     }
 
     update_object() {
@@ -48,11 +46,8 @@ class NPC extends SpriteCharacter {
         
     }
     
-    interact() { // currently copy of TextObject.interact
-        var sample = this.dialogue[rand_int(this.dialogue.length)]
-        this.world.text_instance = new Text(sample, this.name)
-        this.world.text_instance.display_text()
-        this.world.text_instance.next()
+    interact() {
+        trigger_dialogue(this.world, this.dialogue, this.name)
     }
 
 }

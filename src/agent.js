@@ -12,30 +12,39 @@ var Agent = class Agent extends WorldObject {
     }
     
     move(direction) {
-        // redraw environment where player was standing
+        var new_location = this.get_new_location(direction);
+        var old_x = this.x;
+        var old_y = this.y;
+
+        // check collision at new position before committing
+        this.x = new_location.x;
+        this.y = new_location.y;
+
+        if (!this.world.current_env.object_can_pass(this)) {
+            this.x = old_x;
+            this.y = old_y;
+            this.orientation = direction;
+            return;
+        }
+
+        // valid move — redraw old position
+        this.x = old_x;
+        this.y = old_y;
         this.world.current_env.redraw_at_object(this);
-        // redraw player
         if (this != this.world.player) {
             this.world.player.draw_object();
         }
-    
-        
-        // update player location
-        var new_location = this.get_new_location(direction);
-        this.x = new_location.x
-        this.y = new_location.y
+
+        // commit new position
+        this.x = new_location.x;
+        this.y = new_location.y;
         this.orientation = direction;
-        this.step = (this.step + 1) % 2
-        
-        if (!this.world.current_env.object_can_pass(this)) {
-            this.undo_move(direction);
-        }
+        this.step = (this.step + 1) % 2;
+
         if (this == this.world.player) {
-            this.world.current_env.move_environment(new_location)
-            this.world.player.draw_object()
+            this.world.current_env.move_environment(new_location);
+            this.world.player.draw_object();
         }
-        
-        
     }
     
     get_new_location(direction, multiplier=1) {
@@ -45,14 +54,6 @@ var Agent = class Agent extends WorldObject {
         return {x: new_x, y: new_y};
     }
         
-    undo_move(direction) {
-        var move_vec = this.move_vec_dict[direction];
-        this.x -= move_vec.x;
-        this.y -= move_vec.y;
-        this.orientation = direction; // needed??
-        this.step = 1
-    }
-    
     draw_object() {
         fill(255, 255, 255);
         circle(this.get_x(), this.get_y(), this.object_height);

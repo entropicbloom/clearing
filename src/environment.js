@@ -163,8 +163,7 @@ class GridEnvironment extends Environment {
         // check if objects are on tile
         var objects_on_tile = this.objects_on_tile(tile);
         if (objects_on_tile.length > 1) {
-            is_walkable = false;
-            return
+            return false;
         }
         if (objects_on_tile.length == 1) {
             is_walkable = is_walkable && (objects_on_tile[0] == object);
@@ -206,7 +205,7 @@ class GridEnvironment extends Environment {
     }
     
     interact(interacting_agent) {
-        var new_location = interacting_agent.get_new_location(interacting_agent.orientation, 6);
+        var new_location = interacting_agent.get_new_location(interacting_agent.orientation, INTERACT_REACH);
         var tile = this.to_grid_coordinates(new_location);
         var objects_faced = this.objects_on_tile(tile);
         if (objects_faced.length > 0 && objects_faced[0] != interacting_agent) {
@@ -271,8 +270,10 @@ class ScrollingGridEnvironment extends GridEnvironment {
 
     draw_environment() {
         this.draw_background()
-        for (var j_val = 0; j_val < this.grid_map['tiles'].length; j_val++) {
-            for (var i_val = 0; i_val < this.grid_map['tiles'][0].length; i_val++) {
+        var visible_cols = Math.ceil(width / this.grid_size) + 2;
+        var visible_rows = Math.ceil(height / this.grid_size) + 2;
+        for (var j_val = 0; j_val < visible_rows; j_val++) {
+            for (var i_val = 0; i_val < visible_cols; i_val++) {
                 var tile = {i: i_val, j: j_val}
                 this.draw_cell(this.add_offset(tile), tile);
             }

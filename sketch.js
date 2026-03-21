@@ -1,7 +1,6 @@
 
 let pressed_key;
-let counter = 0
-let player_time_constant = 5
+let counter = 0;
 class World {}
 
 function preload() {
@@ -21,16 +20,12 @@ let ctrl_buttons = [
 ]
 
 function setup() {
-
-  createCanvas(600, 450);
-
-  
+  createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT);
 
   world = new World();
-  
-  
-  char_sprite_arr = load_tile_arr(40, 40, CHAR_SPRITES_CONFIG, pictures['sprites_png']);
-  player = new SpriteCharacter(world,
+
+  world.char_sprite_arr = load_tile_arr(40, 40, CHAR_SPRITES_CONFIG, pictures['sprites_png']);
+  world.player = new SpriteCharacter(world,
                                30 * 10, // x
                                30 * 13, // y
                                25, // width
@@ -38,22 +33,16 @@ function setup() {
                                5, // step size
                                player_sprites,
                                'blue');
-  world.player = player;
-  world.char_sprite_arr = char_sprite_arr;
 
-  current_env = new ScrollingGridEnvironment(world, ENV_TILES_CONFIG, home_map);
-  world.current_env = current_env;
-  
-  
-  current_env.draw_environment();
-  current_env.draw_contents();
-  world.player.draw_object();
-  push()
+  world.current_env = new ScrollingGridEnvironment(world, ENV_TILES_CONFIG, home_map);
+
+  draw_scene();
 }
-  
+
 
 function draw() {
-    pop()
+    resetMatrix();
+
     // draw touch buttons and execute if pressed
     if (touches.length > 0) {
         draw_ctrl_buttons()
@@ -63,9 +52,9 @@ function draw() {
     }
 
     // if key pressed, and if counter condition met, execute key actions
-    if (counter % player_time_constant == 0 && pressed_key != null) {
+    if (counter === 0 && pressed_key != null) {
         key_action(pressed_key)
-    }   
+    }
 
     // update environment contents if no text boxes / canvases are displayed
     if (world.text_instance == null) {
@@ -77,20 +66,19 @@ function draw() {
         world.canvas_instance.draw_canvas();
     }
 
-    counter += 1
-    push()
+    counter = (counter + 1) % PLAYER_TIME_CONSTANT;
 }
 
 function touch_action(touch) {
     for (var i = 0; i < ctrl_buttons.length; i++) {
         ctrl_buttons[i].try_press(touch)
-    }  
+    }
 }
 
 function draw_ctrl_buttons() {
     for (var i = 0; i < ctrl_buttons.length; i++) {
         ctrl_buttons[i].draw_button()
-    }  
+    }
 }
 
 function key_action(key) {
@@ -103,7 +91,7 @@ function key_action(key) {
     };
 
     if (key in key_direction_map && world.text_instance == null && world.canvas_instance == null) {
-        moved = world.player.move(key_direction_map[key]);
+        world.player.move(key_direction_map[key]);
 
         var passage = world.current_env.check_passage(world.player);
 
@@ -111,21 +99,20 @@ function key_action(key) {
             world.player.x = passage.new_x;
             world.player.y = passage.new_y;
 
-            env_dict = map_registry[passage.destination_id];
+            var env_dict = map_registry[passage.destination_id];
             if ('scrolling' in env_dict) {
                 world.current_env = new ScrollingGridEnvironment(world, ENV_TILES_CONFIG, env_dict);
                 world.current_env.update_offset()
             } else {
                 world.current_env = new GridEnvironment(world, ENV_TILES_CONFIG, env_dict);
             }
-            resetMatrix() // undo effects of scrolling env translation
-            push()
-            
+            resetMatrix();
+
             draw_scene()
         }
         return
-    } 
-    
+    }
+
     if (key == ' ') {
         if ((world.text_instance == null) && (world.canvas_instance == null)) {
             world.current_env.interact(world.player);
@@ -143,7 +130,7 @@ function key_action(key) {
         }
       }
 
-        
+
     if (key == 'e') {
         world.text_instance = null;
         world.canvas_instance = null;
@@ -156,23 +143,21 @@ function keyPressed() {
         pressed_key = key
     }
     key_action(key)
-    
 }
 
 function keyReleased() {
     if (pressed_key == key) {
         pressed_key = null
     }
-    
-} 
+}
 
 function draw_scene() {
     world.current_env.draw_environment();
     world.current_env.draw_contents();
     world.player.draw_object();
 }
-            
+
 function mouseClicked() {
-    grid_pos = world.current_env.to_grid_coordinates({x: mouseX, y: mouseY})
+    var grid_pos = world.current_env.to_grid_coordinates({x: mouseX, y: mouseY})
     console.log(world.current_env.add_offset(grid_pos))
 }

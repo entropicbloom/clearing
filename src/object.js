@@ -19,11 +19,9 @@ var WorldObject = class WorldObject {
     }
     
     draw_object() {}
-    
+
     update_object() {}
-    
-    get_rect_points() {}
-    
+
     interact() {}
 
     get_rect_points() {

@@ -1,6 +1,6 @@
 
 class Text {
-    
+
     constructor(text_arr, header) {
         /*
         A list of texts that one can click through.
@@ -10,33 +10,36 @@ class Text {
         this.text_arr = text_arr;
         this.counter = 0;
         this.header = header;
-        this.box_width = 550;
     }
-        
+
     more_text_available() {
         return this.counter < this.text_arr.length;
     }
-        
+
     next() {
         this.counter += 1;
     }
 
-    
-
     display_text() {
         fill(255, 220, 235);
-        rect(25, 369, this.box_width, 80);
-        
-        
+        rect(TEXT_BOX_X, TEXT_BOX_Y, TEXT_BOX_WIDTH, TEXT_BOX_HEIGHT);
+
         if (this.header != null) {
             fill(0, 0, 0);
-            text(this.header, 35.0, 390);
+            text(this.header, TEXT_BOX_X + 10, TEXT_BOX_Y + 21);
         }
-        
+
         fill(50, 50, 50);
-        text(this.text_arr[this.counter], 35.0, 410.0, this.box_width - 20);
+        text(this.text_arr[this.counter], TEXT_BOX_X + 10, TEXT_BOX_Y + 41, TEXT_BOX_WIDTH - 20);
     }
 
+}
+
+function trigger_dialogue(world, dialogue, name) {
+    var sample = dialogue[rand_int(dialogue.length)]
+    world.text_instance = new Text(sample, name)
+    world.text_instance.display_text()
+    world.text_instance.next()
 }
 
 class TextObject extends WorldObject{
@@ -46,12 +49,9 @@ class TextObject extends WorldObject{
         this.dialogue = dialogue
         this.name = name
     }
-    
+
     interact() {
-        var sample = this.dialogue[rand_int(this.dialogue.length)]
-        this.world.text_instance = new Text(sample, this.name)
-        this.world.text_instance.display_text()
-        this.world.text_instance.next()
+        trigger_dialogue(this.world, this.dialogue, this.name)
     }
 
 }

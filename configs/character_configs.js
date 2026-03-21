@@ -167,7 +167,7 @@ stoner_dude_1 = new NPC(
         ["I'm like the human eye.", "I need to constantly keep moving otherwise I will stop seeing the things that are beautiful."],
         ["Sometimes the ego takes up a huge chunk of your consciousness, but it is never it."],
         ["Consciousness is a layered experience, corresponding to different abstraction layers.",
-         "Drugs can, among other things, chance the equalizer setting of that layering."]
+         "Drugs can, among other things, chance the equalizer setting of that layering."],
         ["Consciousness is like a gel and if you stretch it to contain many things it loses density and becomes more unclear."],
         ["Is consciousness fundamentally based on changes?",
          "And can it therefore only be experienced from the transition of one state into the next?"],
@@ -187,7 +187,7 @@ stoner_dude_1 = new NPC(
         ["Truths are often blurry and complicated. Being confused may be the truest sometimes."],
         ["To try and to fail is ok"],
         ["Loving is the most important thing,",
-         "but sometimes you need the right people to make that love come to the surface."]
+         "but sometimes you need the right people to make that love come to the surface."],
         ["Mindfulness can turn painful things into weird things."],
         ["I need to forgive myself for being flawed."],
         ["I’ve experienced beauty and pain, and that’s what things will always be like."],

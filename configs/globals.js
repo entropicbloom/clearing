@@ -1,6 +1,17 @@
 let pictures;
 let world;
 
+const CANVAS_WIDTH = 600;
+const CANVAS_HEIGHT = 450;
+const PLAYER_TIME_CONSTANT = 5;
+const INTERACT_REACH = 6;
+const NPC_STEP_COUNTDOWN = 12;
+const NPC_WALK_PROB = 0.1;
+const TEXT_BOX_WIDTH = 550;
+const TEXT_BOX_X = 25;
+const TEXT_BOX_Y = 369;
+const TEXT_BOX_HEIGHT = 80;
+
 let dir_button_dim = 50
 let dir_button_x_offset = 50
 let dir_button_y_offset = 280
