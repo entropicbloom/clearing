@@ -76,6 +76,6 @@ let clearing_rocks = new TextObject(
     25,
     [
         ["Placed, not fallen."],
-        ["Two stones. There were three."]
+        ["One stone. There were two."]
     ]
 );
