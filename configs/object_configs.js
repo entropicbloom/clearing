@@ -53,3 +53,29 @@ let lake_sign = new TextObject(
     30,
     [['Lake Zürich, 18.6.2022, Evening in Nature']]
 );
+
+// Mysterious clearing objects
+let clearing_stone = new TextObject(
+    world,
+    5,  // tile_i (top of the stone)
+    8,  // tile_j
+    25,
+    25,
+    [
+        ["Worn stone. Warm to the touch."],
+        ["Faint marks in the surface. Not writing. Older than writing."],
+        ["It hums when you're not listening."]
+    ]
+);
+
+let clearing_rocks = new TextObject(
+    world,
+    16, // tile_i (rocks by pond)
+    10, // tile_j
+    25,
+    25,
+    [
+        ["Placed, not fallen."],
+        ["Two stones. There were three."]
+    ]
+);

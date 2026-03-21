@@ -91,16 +91,25 @@ old_man_1 = new NPC(
 
 old_man_2 = new NPC(
     world,
-    10, // tile_i
-    7,  // tile_j
+    5, // tile_i (in the mysterious clearing)
+    9, // tile_j
     25, // object_width
     25, // object_height
     old_man_sprites, // char_sprites
     'red',
-    [       
-        ["I'm lost."]
-    ],                      // dialogue
-    'Lost old man' // name
+    [
+        ["The path was here before I was."],
+        ["I keep arriving."],
+        ["The water knows something."],
+        ["I sat down once and the grass grew over my feet.", "It felt right."],
+        ["Do you hear that? No? Good."],
+        ["I think I built this.", "Or I dreamed it.", "Same thing."],
+        ["The stones are warm. They shouldn't be."],
+        ["I stopped looking for the way out.", "The clearing got bigger after that."],
+        ["..."],
+        ["You found it too."]
+    ],
+    '' // no name
 )
 
 stoner_dude_1 = new NPC(
