@@ -23,18 +23,14 @@ function setup() {
 
   createCanvas(600, 450);
 
-
-
   world = new World();
-
 
   char_sprite_arr = load_tile_arr(40, 40, CHAR_SPRITES_CONFIG, pictures['sprites_png']);
   player = new SpriteCharacter(world,
-                               30 * 10 + 15, // x (tile center)
-                               30 * 13 + 15, // y (tile center)
+                               10, // tile_i
+                               13, // tile_j
                                25, // width
                                25, // height
-                               30, // step size = grid size (one full tile)
                                player_sprites,
                                'blue');
   world.player = player;
@@ -42,7 +38,6 @@ function setup() {
 
   current_env = new ScrollingGridEnvironment(world, ENV_TILES_CONFIG, home_map);
   world.current_env = current_env;
-
 
   current_env.draw_environment();
   current_env.draw_contents();
@@ -63,8 +58,10 @@ function draw() {
 
     // If player is currently moving, advance the interpolation
     if (world.player.isMoving) {
+        var prevX = world.player.x;
+        var prevY = world.player.y;
         world.player.update_movement();
-        redraw_player_movement();
+        redraw_player_movement(prevX, prevY);
 
         // When movement completes, check for passage transitions
         if (!world.player.isMoving) {
@@ -94,6 +91,18 @@ function draw() {
     push()
 }
 
+function touch_action(touch) {
+    for (var i = 0; i < ctrl_buttons.length; i++) {
+        ctrl_buttons[i].try_press(touch)
+    }
+}
+
+function draw_ctrl_buttons() {
+    for (var i = 0; i < ctrl_buttons.length; i++) {
+        ctrl_buttons[i].draw_button()
+    }
+}
+
 function request_move(key) {
     var key_direction_map = {
         'w': 'up',
@@ -103,18 +112,39 @@ function request_move(key) {
     };
 
     if (key in key_direction_map && world.text_instance == null && world.canvas_instance == null) {
-        world.player.move(key_direction_map[key]);
+        var moved = world.player.move(key_direction_map[key]);
+        if (!moved) {
+            // Blocked but still update the sprite to face the new direction
+            world.current_env.redraw_at_object(world.player);
+            world.current_env.draw_contents();
+            world.player.draw_object();
+        }
     }
 }
 
-function redraw_player_movement() {
-    world.current_env.move_environment(world.player.get_position());
+function redraw_player_movement(prevX, prevY) {
+    if (world.current_env instanceof ScrollingGridEnvironment) {
+        world.current_env.move_environment(world.player.get_position());
+    } else {
+        // Redraw tiles at the previous position (where sprite was last drawn)
+        var realX = world.player.x;
+        var realY = world.player.y;
+        world.player.x = prevX;
+        world.player.y = prevY;
+        world.current_env.redraw_at_object(world.player);
+        world.player.x = realX;
+        world.player.y = realY;
+        // Redraw tiles at current position and contents
+        world.current_env.redraw_at_object(world.player);
+        world.current_env.draw_contents();
+    }
     world.player.draw_object();
 }
 
 function handle_passage(passage) {
-    world.player.x = passage.new_x;
-    world.player.y = passage.new_y;
+    world.player.tile_i = passage.new_i;
+    world.player.tile_j = passage.new_j;
+    world.player.sync_position();
     world.player.isMoving = false;
 
     env_dict = map_registry[passage.destination_id];
@@ -124,13 +154,15 @@ function handle_passage(passage) {
     } else {
         world.current_env = new GridEnvironment(world, ENV_TILES_CONFIG, env_dict);
     }
-    resetMatrix() // undo effects of scrolling env translation
+    resetMatrix()
     push()
 
     draw_scene()
 }
 
 function key_action(key) {
+
+    if (!world || !world.player) return;
 
     var key_direction_map = {
         'w': 'up',
@@ -161,7 +193,6 @@ function key_action(key) {
         }
       }
 
-
     if (key == 'e') {
         world.text_instance = null;
         world.canvas_instance = null;
@@ -174,14 +205,12 @@ function keyPressed() {
         pressed_key = key
     }
     key_action(key)
-
 }
 
 function keyReleased() {
     if (pressed_key == key) {
         pressed_key = null
     }
-
 }
 
 function draw_scene() {

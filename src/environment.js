@@ -7,13 +7,13 @@ class Environment {
     }
 
     initialize_contents() {}
-    
+
     update_contents() {
         for (var i = 0; i < this.objects.length; i++) {
             this.objects[i].update_object();
         }
     }
-    
+
     draw_contents() {
         for (var i = 0; i < this.objects.length; i++) {
             this.objects[i].draw_object();
@@ -27,19 +27,17 @@ class Environment {
             background(0, 0, 0)
         }
     }
-    
-    redraw_at(position) {}
 
     redraw_at_object(object) {}
 
-    object_can_pass(object) {}
+    tile_can_pass(tile_i, tile_j, moving_object) { return true; }
 
-    check_passage(object) {}
+    check_passage(object) { return null; }
 
     move_environment(position) {}
 
     get_i_offset() {return 0}
-    
+
     get_j_offset() {return 0}
 
     get_x_offset() {return this.get_i_offset() * this.grid_size}
@@ -53,22 +51,22 @@ class Environment {
     subtract_offset(tile) {
         return {i: tile.i - this.get_i_offset(), j: tile.j - this.get_j_offset()}
     }
-    
+
     interact(interacting_agent) {}
-}                
-        
+}
+
 class GridEnvironment extends Environment {
 
     constructor(world, tile_dict, grid_map) {
         super(grid_map['bg_image'])
-        this.world = world;  // reference to world
-        this.tile_dict = tile_dict;  // dictionary defining encoding of tiling textures
-        this.grid_map = grid_map;  // dictionary defining current environment map
-        this.grid_size = grid_map['grid_size'];  // width and height of one grid cell
-        this.env_width = grid_map['tiles'][0].length * this.grid_size;  // width of environment in pixels
-        this.env_height = grid_map['tiles'].length * this.grid_size; // height of environment in pixels
-        this.tile_arr = load_tile_arr(40, 30, tile_dict, pictures['tiles_png']);  // 2D array containing images of all environment tiles
-        
+        this.world = world;
+        this.tile_dict = tile_dict;
+        this.grid_map = grid_map;
+        this.grid_size = grid_map['grid_size'];
+        this.env_width = grid_map['tiles'][0].length * this.grid_size;
+        this.env_height = grid_map['tiles'].length * this.grid_size;
+        this.tile_arr = load_tile_arr(40, 30, tile_dict, pictures['tiles_png']);
+
         this.initialize_contents();
     }
 
@@ -78,7 +76,7 @@ class GridEnvironment extends Environment {
             this.objects[i].world = this.world;
         }
     }
-    
+
     draw_environment() {
         this.draw_background()
         for (var j_val = 0; j_val < this.grid_map['tiles'].length; j_val++) {
@@ -88,16 +86,15 @@ class GridEnvironment extends Environment {
             }
         }
     }
-    
-    draw_cell(tile, tile_place) {
 
+    draw_cell(tile, tile_place) {
         if (tile.i >= this.grid_map['tiles'][0].length || tile.j >= this.grid_map['tiles'].length ||
             tile.i < 0 || tile.j < 0) {
             return
         }
 
         var tile_type = this.grid_map['tiles'][tile.j][tile.i];
-        
+
         if (tile_type >= 0) {
             var tile_coordinates = this.tile_dict['mapping'][tile_type];
             var tile_img = this.tile_arr[tile_coordinates.x][tile_coordinates.y];
@@ -111,18 +108,13 @@ class GridEnvironment extends Environment {
             this.draw_cell(covered_tiles[i], this.subtract_offset(covered_tiles[i]));
         }
     }
-    
-    redraw_at(position) {
-        var tile = this.to_grid_coordinates(position);
-        this.draw_cell(tile, tile);
-    }
-    
+
     to_grid_coordinates(position) {
         var i_val = parseInt(position.x / this.grid_size);
         var j_val = parseInt(position.y / this.grid_size);
         return {i: i_val, j: j_val};
     }
-    
+
     get_covered_tiles(object) {
         var rect_points = object.get_rect_points();
         var min_i = 999;
@@ -132,8 +124,6 @@ class GridEnvironment extends Environment {
 
         for (var i = 0; i < rect_points.length; i++) {
             var rect_points_tile = this.to_grid_coordinates(rect_points[i]);
-            
-            // get rect points of rectangle enclosing all covered tiles
             min_i = Math.min(min_i, rect_points_tile.i);
             min_j = min(min_j, rect_points_tile.j);
             max_i = max(max_i, rect_points_tile.i);
@@ -141,7 +131,7 @@ class GridEnvironment extends Environment {
         }
 
         var covered_tiles = [];
-        for (var i_val = min_i; i_val<= max_i; i_val++) {
+        for (var i_val = min_i; i_val <= max_i; i_val++) {
             for (var j_val = min_j; j_val <= max_j; j_val++) {
                 covered_tiles.push({i: i_val, j: j_val});
             }
@@ -150,81 +140,52 @@ class GridEnvironment extends Environment {
         return covered_tiles;
     }
 
-    tile_is_walkable(tile, object) {
-        
-        // check tile type
-        if (tile.i > this.env_width / this.grid_size - 1 || tile.i < 0 ||
-            tile.j > this.env_height / this.grid_size - 1 || tile.j < 0) {
+    tile_can_pass(tile_i, tile_j, moving_object) {
+        // bounds check
+        if (tile_i < 0 || tile_j < 0 ||
+            tile_i >= this.grid_map['tiles'][0].length ||
+            tile_j >= this.grid_map['tiles'].length) {
             return false;
         }
-        var tile_type = this.grid_map['tiles'][tile.j][tile.i];
-        var is_walkable = this.tile_dict['walkability'].includes(tile_type);
-        
-        // check if objects are on tile
-        var objects_on_tile = this.objects_on_tile(tile);
-        if (objects_on_tile.length > 1) {
-            is_walkable = false;
-            return
+        // walkability check
+        var tile_type = this.grid_map['tiles'][tile_j][tile_i];
+        if (!this.tile_dict['walkability'].includes(tile_type)) {
+            return false;
         }
-        if (objects_on_tile.length == 1) {
-            is_walkable = is_walkable && (objects_on_tile[0] == object);
+        // object collision check
+        var objects = this.objects_on_tile(tile_i, tile_j);
+        for (var i = 0; i < objects.length; i++) {
+            if (objects[i] !== moving_object) return false;
         }
-
-        return is_walkable;
+        return true;
     }
-    
-    object_can_pass(object) {
-        var covered_tiles = this.get_covered_tiles(object);
-        var tile_walkability_list = [];
-        for (var idx = 0; idx < covered_tiles.length; idx++) {
-            tile_walkability_list.push(this.tile_is_walkable(covered_tiles[idx], object));
-        }
 
-        return tile_walkability_list.every(x => x);
-    }
-    
-    objects_on_tile(tile) {
-        var objects_on_tile_list = [];
-        var extended_objects = this.objects.concat([this.world.player]);
-
-        // iterate through all objects in environment
-        for (var i = 0; i < extended_objects.length; i++) {
-            
-            var object = extended_objects[i];
-            var object_tiles = this.get_covered_tiles(object)
-
-            // iterate through all tiles covered by current object
-            for (var tile_idx = 0; tile_idx < object_tiles.length; tile_idx++) {
-                var object_tile = object_tiles[tile_idx]
-                if (tile.i == object_tile.i && tile.j == object_tile.j) {
-                    objects_on_tile_list.push(object);
-                    break;
-                }
+    objects_on_tile(tile_i, tile_j) {
+        var results = [];
+        var all_objects = this.objects.concat([this.world.player]);
+        for (var i = 0; i < all_objects.length; i++) {
+            if (all_objects[i].tile_i === tile_i && all_objects[i].tile_j === tile_j) {
+                results.push(all_objects[i]);
             }
         }
-        return objects_on_tile_list;
+        return results;
     }
-    
+
     interact(interacting_agent) {
-        var new_location = interacting_agent.get_new_location(interacting_agent.orientation, 1);
-        var tile = this.to_grid_coordinates(new_location);
-        var objects_faced = this.objects_on_tile(tile);
-        if (objects_faced.length > 0 && objects_faced[0] != interacting_agent) {
-            objects_faced[0].interact();
+        var delta = DIRECTION_DELTA[interacting_agent.orientation];
+        var target_i = interacting_agent.tile_i + delta.di;
+        var target_j = interacting_agent.tile_j + delta.dj;
+        var objects = this.objects_on_tile(target_i, target_j);
+        if (objects.length > 0 && objects[0] !== interacting_agent) {
+            objects[0].interact();
         }
     }
-    
+
     check_passage(object) {
-        var covered_tiles = this.get_covered_tiles(object);
-        for (var tile_idx = 0; tile_idx < covered_tiles.length; tile_idx++) {
-            var covered_tile = covered_tiles[tile_idx];
-            
-            for (var passage_idx = 0; passage_idx < this.grid_map['passages'].length; passage_idx++) {
-                var passage = this.grid_map['passages'][passage_idx];
-                
-                if (covered_tile.i == passage.i && covered_tile.j == passage.j)  {
-                    return passage;
-                }
+        for (var idx = 0; idx < this.grid_map['passages'].length; idx++) {
+            var passage = this.grid_map['passages'][idx];
+            if (object.tile_i === passage.i && object.tile_j === passage.j) {
+                return passage;
             }
         }
         return null;
@@ -233,41 +194,37 @@ class GridEnvironment extends Environment {
 
 class ScrollingGridEnvironment extends GridEnvironment {
 
-
-    update_offset() {
-        var player_pos = this.world.player.get_position();
-        var player_coords = this.to_grid_coordinates(player_pos);
-        this.i_offset = player_coords.i - parseInt(width / 2 / this.grid_size)
-        this.j_offset = player_coords.j - parseInt(height / 2 / this.grid_size)
+    constructor(world, tile_dict, grid_map) {
+        super(world, tile_dict, grid_map)
+        this.update_offset()
     }
 
+    update_offset() {
+        // Use pixel position (which interpolates smoothly) for offset calculation
+        var player_i = parseInt(this.world.player.x / this.grid_size);
+        var player_j = parseInt(this.world.player.y / this.grid_size);
+        this.i_offset = player_i - parseInt(width / 2 / this.grid_size)
+        this.j_offset = player_j - parseInt(height / 2 / this.grid_size)
+    }
 
     move_environment(position) {
         this.draw_background()
         this.update_offset()
         resetMatrix()
-        translate(-(this.world.player.x % this.grid_size), -(this.world.player.y % this.grid_size)) // smooth scrolling
+        translate(-(this.world.player.x % this.grid_size), -(this.world.player.y % this.grid_size))
         this.draw_environment()
-        this.draw_contents()     
-
+        this.draw_contents()
     }
 
-    update_contents() { // required to maintain translation for map objects
-
+    update_contents() {
         for (var i = 0; i < this.objects.length; i++) {
             this.objects[i].update_object();
         }
     }
 
     get_i_offset() {return this.i_offset}
-    
+
     get_j_offset() {return this.j_offset}
-
-
-    constructor(world, tile_dict, grid_map) {
-        super(world, tile_dict, grid_map)
-        this.update_offset()
-    }
 
     draw_environment() {
         this.draw_background()

@@ -18,8 +18,8 @@ stoner_room_map = {
         [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,],
         [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,],
     ],
-    'passages': [ // maps tile coordinates to (new_map_idx, entry_coordinates_tubple)
-        {i: 8, j: 11, destination_id: 0, new_x: 30 * 10 + 15, new_y: 30 * 13 + 15}
+    'passages': [
+        {i: 8, j: 11, destination_id: 0, new_i: 10, new_j: 13}
     ],
     'objects': [
         stoner_dude_1
@@ -46,7 +46,7 @@ room_map = {
         [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,],
     ],
     'passages': [
-        {i: 8, j: 11, destination_id: 0, new_x: 30 * 14 + 15, new_y: 30 * 7 + 15}
+        {i: 8, j: 11, destination_id: 0, new_i: 14, new_j: 7}
     ],
     'objects': [
         test_canvas
@@ -75,12 +75,12 @@ home_map = {
         [9, 21, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18],
     ],
     'passages': [
-        {i: 13, j: 4, destination_id: 1, new_x: 30 * 8 + 15, new_y: 30 * 10 + 15},
-        {i: 9, j: 11, destination_id: 2, new_x: 30 * 8 + 15, new_y: 30 * 10 + 15},
-        {i: 19, j: 12, destination_id: 3, new_x: 30 * 2 + 15, new_y: 30 * 19 + 15},
-        {i: 11, j: 1, destination_id: 4, new_x: 30 * 5 + 15, new_y: 30 * 10 + 15}
+        {i: 13, j: 4, destination_id: 1, new_i: 8, new_j: 10},
+        {i: 9, j: 11, destination_id: 2, new_i: 8, new_j: 10},
+        {i: 19, j: 12, destination_id: 3, new_i: 2, new_j: 19},
+        {i: 11, j: 1, destination_id: 4, new_i: 5, new_j: 10}
     ],
-    
+
     'objects': [
         old_man_1,
         stoner_house_sign
@@ -115,8 +115,8 @@ fields_map = {
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     ],
     'passages': [
-        {i: 0, j: 19, destination_id: 0, new_x: 30 * 18 + 15, new_y: 30 * 13 + 15},
-        {i: 6, j: 3, destination_id: 4, new_x: 30 * 19 + 15, new_y: 30 * 8 + 15}
+        {i: 0, j: 19, destination_id: 0, new_i: 18, new_j: 13},
+        {i: 6, j: 3, destination_id: 4, new_i: 19, new_j: 8}
     ],
     'objects': [
         old_man_2
@@ -145,10 +145,10 @@ cave_map = {
         [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
         [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
     ],
-    'passages': [ // maps tile coordinates to (new_map_idx, entry_coordinates_tubple)
-        {i: 19, j: 9, destination_id: 3, new_x: 30 * 6 + 15, new_y: 30 * 5 + 15},
-        {i: 5, j: 11, destination_id: 0, new_x: 30 * 11 + 15, new_y: 30 * 3 + 15},
-        {i: 8, j: 2, destination_id: 5, new_x: 30 * 10 + 15, new_y: 30 * 13 + 15}
+    'passages': [
+        {i: 19, j: 9, destination_id: 3, new_i: 6, new_j: 5},
+        {i: 5, j: 11, destination_id: 0, new_i: 11, new_j: 3},
+        {i: 8, j: 2, destination_id: 5, new_i: 10, new_j: 13}
     ],
     'objects': [
     ],
@@ -174,8 +174,8 @@ lake_cave_map = {
         [-1, -1, -1, -1, -1, 58, 58, 58, 58, 58, 58, 58, 58, 58, 58, -1, -1, -1, -1, -1, -1],
         [-1, -1, -1, -1, -1, 69, 66, 66, 66, 66, 59, 66, 66, 66, 70, -1, -1, -1, -1, -1, -1],
     ],
-    'passages': [ // maps tile coordinates to (new_map_idx, entry_coordinates_tubple)
-        {i: 10, j: 14, destination_id: 4, new_x: 30 * 8 + 15, new_y: 30 * 4 + 15}
+    'passages': [
+        {i: 10, j: 14, destination_id: 4, new_i: 8, new_j: 4}
     ],
     'objects': [
         stoner_dude_lake,

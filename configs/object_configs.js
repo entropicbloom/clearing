@@ -14,7 +14,7 @@ class TestCanvas extends Canvas {
 
         var mouse_y_clipped = Math.max(0, Math.min(mouseY, this.canvas_height - this.square_width));
         square(this.x, mouse_y_clipped, this.square_width);
-        
+
         if (this.x + this.square_width >= this.canvas_width) {
             this.direction = -1;
         }
@@ -29,8 +29,8 @@ class TestCanvas extends Canvas {
 
 let test_canvas = new CanvasObject (
     world,
-    120, // x
-    120, // y
+    4,  // tile_i
+    4,  // tile_j
     30, // object_width
     30, // object_height
     new BuddhabrotCanvas(200, 200, 20, false)
@@ -38,18 +38,18 @@ let test_canvas = new CanvasObject (
 
 let stoner_house_sign = new TextObject(
     world,
-    30 * 12,
-    30 * 11,
+    12, // tile_i
+    11, // tile_j
     30,
     30,
-    [['Stoner House']] // dialogue
+    [['Stoner House']]
 );
 
 let lake_sign = new TextObject(
     world,
-    30 * 7,
-    30 * 11,
+    7,  // tile_i
+    11, // tile_j
     30,
     30,
-    [['Lake Zürich, 18.6.2022, Evening in Nature']] // dialogue
+    [['Lake Zürich, 18.6.2022, Evening in Nature']]
 );

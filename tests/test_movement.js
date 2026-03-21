@@ -63,7 +63,7 @@ loadScript('src/agent.js');
 // ---- Mock environment ----
 function make_mock_env(passable) {
     return {
-        object_can_pass: function() { return passable; },
+        tile_can_pass: function() { return passable; },
         redraw_at_object: function() {},
         move_environment: function() {},
         get_x_offset: function() { return 0; },
@@ -80,24 +80,24 @@ function make_mock_world(passable) {
     return w;
 }
 
-function make_agent(world, x, y) {
-    x = (x !== undefined) ? x : 315;  // tile center: 30*10 + 15
-    y = (y !== undefined) ? y : 405;  // tile center: 30*13 + 15
-    return new Agent(world, x, y, 25, 25, 30);
+function make_agent(world, ti, tj) {
+    ti = (ti !== undefined) ? ti : 10;
+    tj = (tj !== undefined) ? tj : 13;
+    return new Agent(world, ti, tj, 25, 25);
 }
 
 // ---- Tests ----
 
 describe('Agent constructor', function() {
-    it('initializes at given position with correct defaults', function() {
+    it('initializes with tile coordinates and computes pixel position', function() {
         var w = make_mock_world();
-        var a = make_agent(w);
-        assert(a.x === 315, 'x should be 315');
-        assert(a.y === 405, 'y should be 405');
-        assert(a.step_size === 30, 'step_size should be 30');
+        var a = make_agent(w, 10, 13);
+        assert(a.tile_i === 10, 'tile_i should be 10');
+        assert(a.tile_j === 13, 'tile_j should be 13');
+        assert(a.x === 10 * 30 + 15, 'x should be tile center pixel');
+        assert(a.y === 13 * 30 + 15, 'y should be tile center pixel');
         assert(a.orientation === 'down', 'orientation should be down');
         assert(a.isMoving === false, 'isMoving should be false');
-        assert(a.moveProgress === 0, 'moveProgress should be 0');
         assert(a.moveDuration === 8, 'moveDuration should be 8');
     });
 });
@@ -105,39 +105,38 @@ describe('Agent constructor', function() {
 describe('Agent.move() - starting a move', function() {
     it('starts interpolation when moving to a passable tile', function() {
         var w = make_mock_world(true);
-        var a = make_agent(w);
+        var a = make_agent(w, 10, 13);
         var result = a.move('right');
         assert(result === true, 'move should return true');
         assert(a.isMoving === true, 'should be moving');
-        assert(a.fromX === 315, 'fromX should be 315');
-        assert(a.fromY === 405, 'fromY should be 405');
-        assert(a.toX === 345, 'toX should be one tile right (345)');
-        assert(a.toY === 405, 'toY should be unchanged');
+        assert(a.tile_i === 11, 'tile_i should advance to 11');
+        assert(a.tile_j === 13, 'tile_j should stay 13');
+        assert(a.toX === 11 * 30 + 15, 'toX should be target tile center');
+        assert(a.toY === 13 * 30 + 15, 'toY should be unchanged');
         assert(a.orientation === 'right', 'orientation should be right');
-        // Position should still be at start (interpolation hasn't advanced)
-        assert(a.x === 315, 'x should not yet be moved');
-        assert(a.y === 405, 'y should not yet be moved');
+        // Pixel position should still be at start (interpolation hasn't advanced)
+        assert(a.x === 10 * 30 + 15, 'x should not yet be moved');
     });
 
     it('rejects move to impassable tile', function() {
         var w = make_mock_world(false);
-        var a = make_agent(w);
+        var a = make_agent(w, 10, 13);
         var result = a.move('right');
         assert(result === false, 'move should return false');
         assert(a.isMoving === false, 'should not be moving');
-        assert(a.x === 315, 'x should be unchanged');
-        assert(a.y === 405, 'y should be unchanged');
-        assert(a.orientation === 'right', 'should still face the attempted direction');
+        assert(a.tile_i === 10, 'tile_i should be unchanged');
+        assert(a.tile_j === 13, 'tile_j should be unchanged');
+        assert(a.orientation === 'right', 'should face attempted direction');
     });
 
     it('rejects move when already moving', function() {
         var w = make_mock_world(true);
-        var a = make_agent(w);
+        var a = make_agent(w, 10, 13);
         a.move('right');
         var result = a.move('up');
         assert(result === false, 'second move should be rejected');
-        assert(a.toX === 345, 'target should still be from first move');
-        assert(a.orientation === 'right', 'orientation should be from first move');
+        assert(a.tile_i === 11, 'tile_i should still be from first move');
+        assert(a.orientation === 'right', 'orientation from first move');
     });
 
     it('toggles step counter for walk animation at start and halfway', function() {
@@ -146,13 +145,10 @@ describe('Agent.move() - starting a move', function() {
         assert(a.step === 0, 'initial step should be 0');
         a.move('down');
         assert(a.step === 1, 'step should toggle to 1 at move start');
-        // advance to halfway (frame 4) — step toggles again
         for (var i = 0; i < 4; i++) a.update_movement();
         assert(a.step === 0, 'step should toggle to 0 at halfway');
-        // complete the move
         for (var i = 0; i < 4; i++) a.update_movement();
         assert(a.isMoving === false, 'move should be done');
-        // start second move
         a.move('down');
         assert(a.step === 1, 'step should toggle to 1 again');
     });
@@ -160,171 +156,133 @@ describe('Agent.move() - starting a move', function() {
     it('resets step to 0 when blocked', function() {
         var w = make_mock_world(false);
         var a = make_agent(w);
-        a.step = 1; // simulate mid-animation
+        a.step = 1;
         a.move('right');
         assert(a.step === 0, 'step should reset to 0 when blocked');
     });
 });
 
 describe('Agent.move() - all four directions', function() {
-    it('moves up (y decreases by grid_size)', function() {
+    it('moves up (tile_j decreases by 1)', function() {
         var w = make_mock_world(true);
-        var a = make_agent(w, 315, 405);
+        var a = make_agent(w, 10, 13);
         a.move('up');
-        assert(a.toX === 315 && a.toY === 375, 'target should be (315, 375)');
+        assert(a.tile_i === 10 && a.tile_j === 12, 'tile should be (10, 12)');
     });
 
-    it('moves down (y increases by grid_size)', function() {
+    it('moves down (tile_j increases by 1)', function() {
         var w = make_mock_world(true);
-        var a = make_agent(w, 315, 405);
+        var a = make_agent(w, 10, 13);
         a.move('down');
-        assert(a.toX === 315 && a.toY === 435, 'target should be (315, 435)');
+        assert(a.tile_i === 10 && a.tile_j === 14, 'tile should be (10, 14)');
     });
 
-    it('moves left (x decreases by grid_size)', function() {
+    it('moves left (tile_i decreases by 1)', function() {
         var w = make_mock_world(true);
-        var a = make_agent(w, 315, 405);
+        var a = make_agent(w, 10, 13);
         a.move('left');
-        assert(a.toX === 285 && a.toY === 405, 'target should be (285, 405)');
+        assert(a.tile_i === 9 && a.tile_j === 13, 'tile should be (9, 13)');
     });
 
-    it('moves right (x increases by grid_size)', function() {
+    it('moves right (tile_i increases by 1)', function() {
         var w = make_mock_world(true);
-        var a = make_agent(w, 315, 405);
+        var a = make_agent(w, 10, 13);
         a.move('right');
-        assert(a.toX === 345 && a.toY === 405, 'target should be (345, 405)');
+        assert(a.tile_i === 11 && a.tile_j === 13, 'tile should be (11, 13)');
     });
 });
 
 describe('Agent.update_movement() - interpolation', function() {
-    it('advances position linearly over moveDuration frames', function() {
+    it('advances pixel position linearly over moveDuration frames', function() {
         var w = make_mock_world(true);
-        var a = make_agent(w, 315, 405);
+        var a = make_agent(w, 10, 13);
+        var startX = a.x;
         a.move('right');
 
-        // After 1 frame: 1/8 of the way
         a.update_movement();
-        assertClose(a.x, 315 + 30 * (1/8), 0.01, 'frame 1 x');
+        assertClose(a.x, startX + 30 * (1/8), 0.01, 'frame 1 x');
         assert(a.isMoving === true, 'still moving at frame 1');
 
-        // After 4 frames total: halfway
         a.update_movement();
         a.update_movement();
         a.update_movement();
-        assertClose(a.x, 315 + 30 * (4/8), 0.01, 'frame 4 x');
-        assert(a.isMoving === true, 'still moving at frame 4');
+        assertClose(a.x, startX + 30 * (4/8), 0.01, 'frame 4 x');
 
-        // After 8 frames total: arrives
         a.update_movement();
         a.update_movement();
         a.update_movement();
         a.update_movement();
-        assert(a.x === 345, 'should snap to target x');
-        assert(a.y === 405, 'y should be unchanged');
+        assert(a.x === 11 * 30 + 15, 'should snap to target pixel');
         assert(a.isMoving === false, 'should no longer be moving');
     });
 
     it('does nothing when not moving', function() {
         var w = make_mock_world(true);
-        var a = make_agent(w, 315, 405);
+        var a = make_agent(w, 10, 13);
+        var origX = a.x;
+        var origY = a.y;
         a.update_movement();
-        assert(a.x === 315 && a.y === 405, 'position should be unchanged');
-        assert(a.isMoving === false, 'should not be moving');
+        assert(a.x === origX && a.y === origY, 'position should be unchanged');
     });
 
-    it('snaps exactly to target (no floating point drift)', function() {
+    it('snaps exactly to target tile center', function() {
         var w = make_mock_world(true);
-        var a = make_agent(w, 315, 405);
+        var a = make_agent(w, 10, 13);
         a.move('up');
         for (var i = 0; i < 8; i++) a.update_movement();
-        assert(a.x === 315, 'x should be exactly 315');
-        assert(a.y === 375, 'y should be exactly 375');
-    });
-
-    it('interpolates y correctly for vertical movement', function() {
-        var w = make_mock_world(true);
-        var a = make_agent(w, 315, 405);
-        a.move('down');
-
-        // halfway
-        for (var i = 0; i < 4; i++) a.update_movement();
-        assertClose(a.y, 405 + 15, 0.01, 'halfway y');
-        assert(a.x === 315, 'x unchanged during vertical move');
+        assert(a.x === 10 * 30 + 15, 'x should be tile 10 center');
+        assert(a.y === 12 * 30 + 15, 'y should be tile 12 center');
     });
 });
 
-describe('Agent.snap_to_grid()', function() {
-    it('snaps slightly off-center position to tile center', function() {
+describe('WorldObject.sync_position()', function() {
+    it('recomputes pixel position from tile coords', function() {
         var w = make_mock_world(true);
-        var a = make_agent(w, 302, 388);
-        a.snap_to_grid();
-        assert(a.x === 315, 'x should snap to tile center 315');
-        assert(a.y === 375, 'y should snap to tile center 375');
-    });
-
-    it('leaves already-centered position unchanged', function() {
-        var w = make_mock_world(true);
-        var a = make_agent(w, 315, 405);
-        a.snap_to_grid();
-        assert(a.x === 315, 'x unchanged');
-        assert(a.y === 405, 'y unchanged');
+        var a = make_agent(w, 10, 13);
+        a.tile_i = 5;
+        a.tile_j = 7;
+        a.sync_position();
+        assert(a.x === 5 * 30 + 15, 'x should match new tile_i');
+        assert(a.y === 7 * 30 + 15, 'y should match new tile_j');
     });
 });
 
 describe('Consecutive tile moves', function() {
     it('can chain two moves after completing the first', function() {
         var w = make_mock_world(true);
-        var a = make_agent(w, 315, 405);
+        var a = make_agent(w, 10, 13);
 
         a.move('right');
         for (var i = 0; i < 8; i++) a.update_movement();
-        assert(a.x === 345 && !a.isMoving, 'first move should be complete');
+        assert(a.tile_i === 11 && !a.isMoving, 'first move complete');
 
         var result = a.move('down');
-        assert(result === true, 'second move should be accepted');
+        assert(result === true, 'second move accepted');
         for (var i = 0; i < 8; i++) a.update_movement();
-        assert(a.x === 345 && a.y === 435, 'second move should be complete');
-        assert(!a.isMoving, 'should not be moving');
+        assert(a.tile_i === 11 && a.tile_j === 14, 'second move complete');
     });
 
-    it('correctly tracks fromX/fromY for second move', function() {
+    it('updates tile coords immediately on move start', function() {
         var w = make_mock_world(true);
-        var a = make_agent(w, 315, 405);
-
+        var a = make_agent(w, 10, 13);
         a.move('right');
-        for (var i = 0; i < 8; i++) a.update_movement();
-
-        a.move('right');
-        assert(a.fromX === 345, 'fromX should be previous target');
-        assert(a.toX === 375, 'toX should be next tile');
+        assert(a.tile_i === 11, 'tile_i updates immediately');
+        assert(a.isMoving === true, 'still animating');
     });
 });
 
-describe('get_new_location with multiplier', function() {
-    it('returns position one tile ahead with multiplier=1', function() {
-        var w = make_mock_world(true);
-        var a = make_agent(w, 315, 405);
-        var loc = a.get_new_location('right', 1);
-        assert(loc.x === 345 && loc.y === 405, 'one tile right');
-    });
-
-    it('uses current position (not target) for calculation', function() {
-        var w = make_mock_world(true);
-        var a = make_agent(w, 315, 405);
-        a.move('right');
-        // Mid-interpolation, get_new_location should use current x (still 315)
-        var loc = a.get_new_location('down', 1);
-        assert(loc.x === 315 && loc.y === 435, 'should be based on current position');
+describe('DIRECTION_DELTA', function() {
+    it('has correct deltas for all four directions', function() {
+        assert(DIRECTION_DELTA['up'].di === 0 && DIRECTION_DELTA['up'].dj === -1, 'up');
+        assert(DIRECTION_DELTA['down'].di === 0 && DIRECTION_DELTA['down'].dj === 1, 'down');
+        assert(DIRECTION_DELTA['left'].di === -1 && DIRECTION_DELTA['left'].dj === 0, 'left');
+        assert(DIRECTION_DELTA['right'].di === 1 && DIRECTION_DELTA['right'].dj === 0, 'right');
     });
 });
 
-describe('Move vector dictionary', function() {
-    it('produces correct vectors for grid_size=30', function() {
-        var vecs = get_move_vec_dict(30);
-        assert(vecs['up'].x === 0 && vecs['up'].y === -30, 'up');
-        assert(vecs['down'].x === 0 && vecs['down'].y === 30, 'down');
-        assert(vecs['left'].x === -30 && vecs['left'].y === 0, 'left');
-        assert(vecs['right'].x === 30 && vecs['right'].y === 0, 'right');
+describe('GRID_SIZE constant', function() {
+    it('is 30', function() {
+        assert(GRID_SIZE === 30, 'GRID_SIZE should be 30');
     });
 });
 
