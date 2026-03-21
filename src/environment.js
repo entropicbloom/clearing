@@ -38,6 +38,8 @@ class Environment {
 
     move_environment(position) {}
 
+    apply_transform() {}
+
     get_i_offset() {return 0}
     
     get_j_offset() {return 0}
@@ -241,19 +243,21 @@ class ScrollingGridEnvironment extends GridEnvironment {
     }
 
 
+    apply_transform() {
+        resetMatrix();
+        translate(-(this.world.player.x % this.grid_size), -(this.world.player.y % this.grid_size));
+    }
+
     move_environment(position) {
         this.draw_background()
         this.update_offset()
-        resetMatrix()
-        translate(-(this.world.player.x % this.grid_size), -(this.world.player.y % this.grid_size)) // smooth scrolling
+        this.apply_transform();
         this.draw_environment()
-        this.draw_contents()     
-
+        this.draw_contents()
     }
 
     update_contents() {
-        resetMatrix();
-        translate(-(this.world.player.x % this.grid_size), -(this.world.player.y % this.grid_size));
+        this.apply_transform();
         for (var i = 0; i < this.objects.length; i++) {
             this.objects[i].update_object();
         }

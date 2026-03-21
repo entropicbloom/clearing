@@ -152,6 +152,7 @@ function keyReleased() {
 }
 
 function draw_scene() {
+    world.current_env.apply_transform();
     world.current_env.draw_environment();
     world.current_env.draw_contents();
     world.player.draw_object();
