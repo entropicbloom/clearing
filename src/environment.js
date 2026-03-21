@@ -251,8 +251,9 @@ class ScrollingGridEnvironment extends GridEnvironment {
 
     }
 
-    update_contents() { // required to maintain translation for map objects
-
+    update_contents() {
+        resetMatrix();
+        translate(-(this.world.player.x % this.grid_size), -(this.world.player.y % this.grid_size));
         for (var i = 0; i < this.objects.length; i++) {
             this.objects[i].update_object();
         }
