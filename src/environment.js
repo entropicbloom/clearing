@@ -206,7 +206,7 @@ class GridEnvironment extends Environment {
     }
     
     interact(interacting_agent) {
-        var new_location = interacting_agent.get_new_location(interacting_agent.orientation, 6);
+        var new_location = interacting_agent.get_new_location(interacting_agent.orientation, 1);
         var tile = this.to_grid_coordinates(new_location);
         var objects_faced = this.objects_on_tile(tile);
         if (objects_faced.length > 0 && objects_faced[0] != interacting_agent) {

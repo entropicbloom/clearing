@@ -1,7 +1,6 @@
 
 let pressed_key;
 let counter = 0
-let player_time_constant = 5
 class World {}
 
 function preload() {
@@ -24,18 +23,18 @@ function setup() {
 
   createCanvas(600, 450);
 
-  
+
 
   world = new World();
-  
-  
+
+
   char_sprite_arr = load_tile_arr(40, 40, CHAR_SPRITES_CONFIG, pictures['sprites_png']);
   player = new SpriteCharacter(world,
-                               30 * 10, // x
-                               30 * 13, // y
+                               30 * 10 + 15, // x (tile center)
+                               30 * 13 + 15, // y (tile center)
                                25, // width
                                25, // height
-                               5, // step size
+                               30, // step size = grid size (one full tile)
                                player_sprites,
                                'blue');
   world.player = player;
@@ -43,14 +42,14 @@ function setup() {
 
   current_env = new ScrollingGridEnvironment(world, ENV_TILES_CONFIG, home_map);
   world.current_env = current_env;
-  
-  
+
+
   current_env.draw_environment();
   current_env.draw_contents();
   world.player.draw_object();
   push()
 }
-  
+
 
 function draw() {
     pop()
@@ -62,12 +61,26 @@ function draw() {
         }
     }
 
-    // if key pressed, and if counter condition met, execute key actions
-    if (counter % player_time_constant == 0 && pressed_key != null) {
-        key_action(pressed_key)
-    }   
+    // If player is currently moving, advance the interpolation
+    if (world.player.isMoving) {
+        world.player.update_movement();
+        redraw_player_movement();
 
-    // update environment contents if no text boxes / canvases are displayed
+        // When movement completes, check for passage transitions
+        if (!world.player.isMoving) {
+            var passage = world.current_env.check_passage(world.player);
+            if (passage != null) {
+                handle_passage(passage);
+            }
+        }
+    }
+
+    // If player is idle and a direction key is held, start a new tile move
+    if (!world.player.isMoving && pressed_key != null) {
+        request_move(pressed_key);
+    }
+
+    // update environment contents (NPCs) if no text boxes / canvases are displayed
     if (world.text_instance == null) {
         world.current_env.update_contents();
     }
@@ -81,16 +94,40 @@ function draw() {
     push()
 }
 
-function touch_action(touch) {
-    for (var i = 0; i < ctrl_buttons.length; i++) {
-        ctrl_buttons[i].try_press(touch)
-    }  
+function request_move(key) {
+    var key_direction_map = {
+        'w': 'up',
+        's': 'down',
+        'd': 'right',
+        'a': 'left'
+    };
+
+    if (key in key_direction_map && world.text_instance == null && world.canvas_instance == null) {
+        world.player.move(key_direction_map[key]);
+    }
 }
 
-function draw_ctrl_buttons() {
-    for (var i = 0; i < ctrl_buttons.length; i++) {
-        ctrl_buttons[i].draw_button()
-    }  
+function redraw_player_movement() {
+    world.current_env.move_environment(world.player.get_position());
+    world.player.draw_object();
+}
+
+function handle_passage(passage) {
+    world.player.x = passage.new_x;
+    world.player.y = passage.new_y;
+    world.player.isMoving = false;
+
+    env_dict = map_registry[passage.destination_id];
+    if ('scrolling' in env_dict) {
+        world.current_env = new ScrollingGridEnvironment(world, ENV_TILES_CONFIG, env_dict);
+        world.current_env.update_offset()
+    } else {
+        world.current_env = new GridEnvironment(world, ENV_TILES_CONFIG, env_dict);
+    }
+    resetMatrix() // undo effects of scrolling env translation
+    push()
+
+    draw_scene()
 }
 
 function key_action(key) {
@@ -103,29 +140,10 @@ function key_action(key) {
     };
 
     if (key in key_direction_map && world.text_instance == null && world.canvas_instance == null) {
-        moved = world.player.move(key_direction_map[key]);
-
-        var passage = world.current_env.check_passage(world.player);
-
-        if (passage != null) {
-            world.player.x = passage.new_x;
-            world.player.y = passage.new_y;
-
-            env_dict = map_registry[passage.destination_id];
-            if ('scrolling' in env_dict) {
-                world.current_env = new ScrollingGridEnvironment(world, ENV_TILES_CONFIG, env_dict);
-                world.current_env.update_offset()
-            } else {
-                world.current_env = new GridEnvironment(world, ENV_TILES_CONFIG, env_dict);
-            }
-            resetMatrix() // undo effects of scrolling env translation
-            push()
-            
-            draw_scene()
-        }
+        request_move(key);
         return
-    } 
-    
+    }
+
     if (key == ' ') {
         if ((world.text_instance == null) && (world.canvas_instance == null)) {
             world.current_env.interact(world.player);
@@ -143,7 +161,7 @@ function key_action(key) {
         }
       }
 
-        
+
     if (key == 'e') {
         world.text_instance = null;
         world.canvas_instance = null;
@@ -156,22 +174,22 @@ function keyPressed() {
         pressed_key = key
     }
     key_action(key)
-    
+
 }
 
 function keyReleased() {
     if (pressed_key == key) {
         pressed_key = null
     }
-    
-} 
+
+}
 
 function draw_scene() {
     world.current_env.draw_environment();
     world.current_env.draw_contents();
     world.player.draw_object();
 }
-            
+
 function mouseClicked() {
     grid_pos = world.current_env.to_grid_coordinates({x: mouseX, y: mouseY})
     console.log(world.current_env.add_offset(grid_pos))

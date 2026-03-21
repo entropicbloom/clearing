@@ -55,11 +55,11 @@ stoner_dude_sprites = {
 
 old_man_1 = new NPC(
     world,
-    300, // x
-    150, // y
+    30 * 10 + 15, // x (tile center)
+    30 * 5 + 15, // y (tile center)
     25, // object_width
     25, // object_height
-    5, // step_size
+    30, // step_size (= grid_size, one tile per move)
     old_man_sprites, // char_sprites
     'brown',
     [                                       // dialogue
@@ -92,11 +92,11 @@ old_man_1 = new NPC(
 
 old_man_2 = new NPC(
     world,
-    300, // x
-    200, // y
+    30 * 10 + 15, // x (tile center)
+    30 * 7 + 15, // y (tile center)
     25, // object_width
     25, // object_height
-    5, // step_size
+    30, // step_size (= grid_size, one tile per move)
     old_man_sprites, // char_sprites
     'red',
     [       
@@ -107,11 +107,11 @@ old_man_2 = new NPC(
 
 stoner_dude_1 = new NPC(
     world,
-    200,
-    200,
+    30 * 7 + 15, // x (tile center)
+    30 * 7 + 15, // y (tile center)
     25,
     25,
-    5,
+    30, // step_size (= grid_size, one tile per move)
     stoner_dude_sprites,
     'green',
     [
@@ -208,11 +208,11 @@ stoner_dude_1 = new NPC(
 
 stoner_dude_lake = new NPC(
     world,
-    360,
-    360,
+    30 * 12 + 15, // x (tile center)
+    30 * 12 + 15, // y (tile center)
     25,
     25,
-    5,
+    30, // step_size (= grid_size, one tile per move)
     stoner_dude_sprites,
     'blue',
     [

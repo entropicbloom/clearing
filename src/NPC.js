@@ -4,8 +4,8 @@ function rand_int(max_int) {
 }
 
 class NPC extends SpriteCharacter {
-    
-    
+
+
     walk_prob = 1
     int_to_direction = {
         0: 'up',
@@ -13,7 +13,7 @@ class NPC extends SpriteCharacter {
         2: 'left',
         3: 'right'
     }
-    
+
     constructor(world, x, y, object_width, object_height, step_size, char_sprites, color, dialogue, name) {
         super(world, x, y, object_width, object_height, step_size, char_sprites, color)
         this.dialogue = dialogue
@@ -24,30 +24,35 @@ class NPC extends SpriteCharacter {
     }
 
     update_object() {
-        
+
+        // Advance interpolation if currently moving
+        if (this.isMoving) {
+            this.update_movement();
+            // Redraw: clear old tiles and draw at new interpolated position
+            this.world.current_env.redraw_at_object(this);
+            this.draw_object();
+            // Also redraw player in case NPC walked over their tiles
+            if (this.world.player) {
+                this.world.player.draw_object();
+            }
+            return;
+        }
+
+        // Only start new moves when idle
         if (this.step_count_down == 0) {
-            
-            // step 1
-            if (this.step == 1 && Math.random() < this.walk_prob) {
+
+            if (Math.random() < this.walk_prob) {
                 var direction_int = rand_int(4)
                 var direction = this.int_to_direction[direction_int]
                 this.move(direction)
-                this.draw_object()
-            
-            // step 2
-            } else {
-                if (this.step == 0) {
-                    this.move(this.orientation)
-                    this.draw_object()
-                }
             }
             this.step_count_down = this.step_count_down_start
         } else {
             this.step_count_down -= 1
         }
-        
+
     }
-    
+
     interact() { // currently copy of TextObject.interact
         var sample = this.dialogue[rand_int(this.dialogue.length)]
         this.world.text_instance = new Text(sample, this.name)
@@ -58,6 +63,5 @@ class NPC extends SpriteCharacter {
 }
 
 
-        
-    
-    
+
+

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Movement Tests</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #1a1a1a; color: #eee; }
+        .pass { color: #4caf50; }
+        .fail { color: #f44336; }
+        .suite { color: #90caf9; font-size: 1.1em; margin-top: 16px; }
+        #results { white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+<h2>Tile-Based Movement Tests</h2>
+<div id="results"></div>
+
+<script>
+// ---- Minimal test framework ----
+let testResults = { passed: 0, failed: 0 };
+const results = [];
+
+function describe(name, fn) {
+    results.push({ type: 'suite', text: name });
+    fn();
+}
+
+function it(name, fn) {
+    try {
+        fn();
+        results.push({ type: 'pass', text: '  PASS: ' + name });
+        testResults.passed++;
+    } catch (e) {
+        results.push({ type: 'fail', text: '  FAIL: ' + name + '\n    ' + e.message });
+        testResults.failed++;
+    }
+}
+
+function assert(condition, msg) {
+    if (!condition) throw new Error(msg || 'Assertion failed');
+}
+
+function assertClose(a, b, epsilon, msg) {
+    if (Math.abs(a - b) > (epsilon || 0.01)) {
+        throw new Error((msg || '') + ' expected ' + b + ' got ' + a);
+    }
+}
+
+// ---- Mock p5.js globals and WorldObject ----
+function fill() {}
+function circle() {}
+function image() {}
+function push() {}
+function pop() {}
+function scale() {}
+function min(a, b) { return Math.min(a, b); }
+function max(a, b) { return Math.max(a, b); }
+
+var CHAR_SPRITES_CONFIG = {
+    'offset': 16, 'border': 0,
+    'colors': ['red', 'blue', 'green', 'brown'],
+    'color_offset': 8
+};
+</script>
+
+<!-- Load source files in dependency order -->
+<script src="../src/object.js"></script>
+<script src="../src/agent.js"></script>
+
+<script>
+// ---- Mock environment for collision checks ----
+function make_mock_env(passable) {
+    return {
+        object_can_pass: function() { return passable; },
+        redraw_at_object: function() {},
+        move_environment: function() {},
+        get_x_offset: function() { return 0; },
+        get_y_offset: function() { return 0; },
+        check_passage: function() { return null; }
+    };
+}
+
+function make_mock_world(passable) {
+    var w = {};
+    w.current_env = make_mock_env(passable !== false);
+    w.player = null;
+    w.char_sprite_arr = [];
+    return w;
+}
+
+function make_agent(world, x, y) {
+    x = x || 300;
+    y = y || 390;
+    var a = new Agent(world, x, y, 25, 25, 30);
+    return a;
+}
+
+// ---- Tests ----
+
+describe('Agent constructor', function() {
+    it('initializes at given position with correct defaults', function() {
+        var w = make_mock_world();
+        var a = make_agent(w);
+        assert(a.x === 300, 'x');
+        assert(a.y === 390, 'y');
+        assert(a.step_size === 30, 'step_size');
+        assert(a.orientation === 'down', 'orientation');
+        assert(a.isMoving === false, 'isMoving');
+        assert(a.moveProgress === 0, 'moveProgress');
+        assert(a.moveDuration === 8, 'moveDuration');
+    });
+});
+
+describe('Agent.move() - starting a move', function() {
+    it('starts interpolation when moving to a passable tile', function() {
+        var w = make_mock_world(true);
+        var a = make_agent(w);
+        var result = a.move('right');
+        assert(result === true, 'move should return true');
+        assert(a.isMoving === true, 'should be moving');
+        assert(a.fromX === 300, 'fromX');
+        assert(a.fromY === 390, 'fromY');
+        assert(a.toX === 330, 'toX should be one tile right');
+        assert(a.toY === 390, 'toY unchanged');
+        assert(a.orientation === 'right', 'orientation');
+        // Position should still be at start (interpolation hasn't advanced yet)
+        assert(a.x === 300, 'x not yet moved');
+        assert(a.y === 390, 'y not yet moved');
+    });
+
+    it('rejects move to impassable tile', function() {
+        var w = make_mock_world(false);
+        var a = make_agent(w);
+        var result = a.move('right');
+        assert(result === false, 'move should return false');
+        assert(a.isMoving === false, 'should not be moving');
+        assert(a.x === 300, 'x unchanged');
+        assert(a.y === 390, 'y unchanged');
+        assert(a.orientation === 'right', 'orientation still updates to face direction');
+    });
+
+    it('rejects move when already moving', function() {
+        var w = make_mock_world(true);
+        var a = make_agent(w);
+        a.move('right');
+        var result = a.move('up');
+        assert(result === false, 'second move should be rejected');
+        assert(a.toX === 330, 'target still the first move');
+        assert(a.orientation === 'right', 'orientation unchanged from first move');
+    });
+
+    it('toggles step counter for walk animation', function() {
+        var w = make_mock_world(true);
+        var a = make_agent(w);
+        assert(a.step === 0, 'initial step is 0');
+        a.move('down');
+        assert(a.step === 1, 'step toggled to 1 after first move');
+        // complete the move
+        for (var i = 0; i < 8; i++) a.update_movement();
+        assert(a.isMoving === false);
+        a.move('down');
+        assert(a.step === 0, 'step toggled back to 0');
+    });
+});
+
+describe('Agent.move() - all four directions', function() {
+    it('moves up (y decreases by grid_size)', function() {
+        var w = make_mock_world(true);
+        var a = make_agent(w, 300, 390);
+        a.move('up');
+        assert(a.toX === 300 && a.toY === 360, 'target one tile up');
+    });
+
+    it('moves down (y increases by grid_size)', function() {
+        var w = make_mock_world(true);
+        var a = make_agent(w, 300, 390);
+        a.move('down');
+        assert(a.toX === 300 && a.toY === 420, 'target one tile down');
+    });
+
+    it('moves left (x decreases by grid_size)', function() {
+        var w = make_mock_world(true);
+        var a = make_agent(w, 300, 390);
+        a.move('left');
+        assert(a.toX === 270 && a.toY === 390, 'target one tile left');
+    });
+
+    it('moves right (x increases by grid_size)', function() {
+        var w = make_mock_world(true);
+        var a = make_agent(w, 300, 390);
+        a.move('right');
+        assert(a.toX === 330 && a.toY === 390, 'target one tile right');
+    });
+});
+
+describe('Agent.update_movement() - interpolation', function() {
+    it('advances position linearly over moveDuration frames', function() {
+        var w = make_mock_world(true);
+        var a = make_agent(w, 300, 390);
+        a.move('right'); // target: 330, 390
+
+        // After 1 frame: 1/8 of the way
+        a.update_movement();
+        assertClose(a.x, 300 + 30 * (1/8), 0.01, 'frame 1 x');
+        assert(a.isMoving === true, 'still moving at frame 1');
+
+        // After 4 frames total: halfway
+        a.update_movement();
+        a.update_movement();
+        a.update_movement();
+        assertClose(a.x, 300 + 30 * (4/8), 0.01, 'frame 4 x');
+        assert(a.isMoving === true, 'still moving at frame 4');
+
+        // After 8 frames total: arrives
+        a.update_movement();
+        a.update_movement();
+        a.update_movement();
+        a.update_movement();
+        assert(a.x === 330, 'snaps to target x');
+        assert(a.y === 390, 'y unchanged');
+        assert(a.isMoving === false, 'no longer moving');
+    });
+
+    it('does nothing when not moving', function() {
+        var w = make_mock_world(true);
+        var a = make_agent(w, 300, 390);
+        a.update_movement(); // should be a no-op
+        assert(a.x === 300 && a.y === 390, 'position unchanged');
+        assert(a.isMoving === false);
+    });
+
+    it('snaps exactly to target (no floating point drift)', function() {
+        var w = make_mock_world(true);
+        var a = make_agent(w, 300, 390);
+        a.move('up');
+        for (var i = 0; i < 8; i++) a.update_movement();
+        assert(a.x === 300, 'x exact');
+        assert(a.y === 360, 'y exact (one tile up)');
+    });
+});
+
+describe('Agent.snap_to_grid()', function() {
+    it('snaps a slightly off-grid position to nearest tile boundary', function() {
+        var w = make_mock_world(true);
+        var a = make_agent(w, 302, 388);
+        a.snap_to_grid();
+        assert(a.x === 300, 'x snapped');
+        assert(a.y === 390, 'y snapped');
+    });
+});
+
+describe('Consecutive tile moves', function() {
+    it('can chain two moves after completing the first', function() {
+        var w = make_mock_world(true);
+        var a = make_agent(w, 300, 390);
+
+        // First move: right
+        a.move('right');
+        for (var i = 0; i < 8; i++) a.update_movement();
+        assert(a.x === 330 && !a.isMoving, 'first move complete');
+
+        // Second move: down
+        var result = a.move('down');
+        assert(result === true, 'second move accepted');
+        for (var i = 0; i < 8; i++) a.update_movement();
+        assert(a.x === 330 && a.y === 420, 'second move complete');
+        assert(!a.isMoving);
+    });
+});
+
+describe('get_new_location with multiplier', function() {
+    it('returns position one tile ahead with multiplier=1', function() {
+        var w = make_mock_world(true);
+        var a = make_agent(w, 300, 390);
+        a.orientation = 'right';
+        var loc = a.get_new_location('right', 1);
+        assert(loc.x === 330 && loc.y === 390, 'one tile right');
+    });
+});
+
+// ---- Render results ----
+var el = document.getElementById('results');
+results.forEach(function(r) {
+    var div = document.createElement('div');
+    div.className = r.type;
+    div.textContent = r.text;
+    el.appendChild(div);
+});
+
+var summary = document.createElement('div');
+summary.style.marginTop = '20px';
+summary.style.fontSize = '1.2em';
+summary.textContent = testResults.passed + ' passed, ' + testResults.failed + ' failed';
+summary.className = testResults.failed > 0 ? 'fail' : 'pass';
+el.appendChild(summary);
+</script>
+</body>
+</html>
