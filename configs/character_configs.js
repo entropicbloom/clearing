@@ -19,16 +19,16 @@ player_sprites = {
 old_man_sprites = {
     step_sprites: [
         {
-            'down': {i: 0, j: 6, mirror: false},
-            'up': {i: 1, j: 6, mirror: false},
-            'left': {i: 2, j: 6, mirror: false},
-            'right': {i: 2, j: 6, mirror: true}
-        },
-        {
             'down': {i: 5, j: 5, mirror: false},
             'up': {i: 6, j: 5, mirror: false},
             'left': {i: 7, j: 5, mirror: false},
             'right': {i: 7, j: 5, mirror: true}
+        },
+        {
+            'down': {i: 0, j: 6, mirror: false},
+            'up': {i: 1, j: 6, mirror: false},
+            'left': {i: 2, j: 6, mirror: false},
+            'right': {i: 2, j: 6, mirror: true}
         }
     ]
 }
@@ -37,16 +37,16 @@ old_man_sprites = {
 stoner_dude_sprites = {
     step_sprites: [
         {
-            'down': {i: 4, j: 19, mirror: false},
-            'up': {i: 5, j: 19, mirror: false},
-            'left': {i: 6, j: 19, mirror: false},
-            'right': {i: 6, j: 19, mirror: true}
-        },
-        {
             'down': {i: 1, j: 19, mirror: false},
             'up': {i: 2, j: 19, mirror: false},
             'left': {i: 3, j: 19, mirror: false},
             'right': {i: 3, j: 19, mirror: true}
+        },
+        {
+            'down': {i: 4, j: 19, mirror: false},
+            'up': {i: 5, j: 19, mirror: false},
+            'left': {i: 6, j: 19, mirror: false},
+            'right': {i: 6, j: 19, mirror: true}
         }
     ]
 }
