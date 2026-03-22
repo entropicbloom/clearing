@@ -97,7 +97,14 @@ class Canvas {
         translate(width / 2 - this.canvas_width / 2, height / 2 - this.canvas_height / 2)
         this.draw_contents()
         pop()
-        
+
+        // "press E to close" hint
+        fill(200)
+        noStroke()
+        textSize(12)
+        textAlign(RIGHT)
+        text('press E to close', width - 10, height - 10)
+
         this.counter += 1
     }
         

@@ -78,6 +78,15 @@ let clearing_stone = new TextObject(
     ]
 );
 
+let locked_door = new TextObject(
+    world,
+    3,  // tile_i
+    3,  // tile_j
+    30,
+    30,
+    [["The door is locked."]]
+);
+
 let clearing_rocks = new TextObject(
     world,
     16, // tile_i (rocks by pond)

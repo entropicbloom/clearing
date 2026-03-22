@@ -76,7 +76,7 @@ function draw() {
     }
 
     // update environment contents (NPCs) if no text boxes / canvases are displayed
-    if (world.text_instance == null) {
+    if (world.text_instance == null && world.canvas_instance == null) {
         world.current_env.update_contents();
     }
 
