@@ -39,9 +39,7 @@ function setup() {
   current_env = new ScrollingGridEnvironment(world, ENV_TILES_CONFIG, home_map);
   world.current_env = current_env;
 
-  current_env.draw_environment();
-  current_env.draw_contents();
-  world.player.draw_object();
+  draw_scene()
   push()
 }
 
@@ -214,6 +212,11 @@ function keyReleased() {
 }
 
 function draw_scene() {
+    if (world.current_env instanceof ScrollingGridEnvironment) {
+        world.current_env.update_offset()
+        resetMatrix()
+        translate(-(world.player.x % world.current_env.grid_size), -(world.player.y % world.current_env.grid_size))
+    }
     world.current_env.draw_environment();
     world.current_env.draw_contents();
     world.player.draw_object();

@@ -152,6 +152,15 @@ class GridEnvironment extends Environment {
         if (!this.tile_dict['walkability'].includes(tile_type)) {
             return false;
         }
+        // block NPCs from entering passage tiles
+        if (moving_object instanceof NPC) {
+            for (var p = 0; p < this.grid_map['passages'].length; p++) {
+                var passage = this.grid_map['passages'][p];
+                if (tile_i === passage.i && tile_j === passage.j) {
+                    return false;
+                }
+            }
+        }
         // object collision check
         var objects = this.objects_on_tile(tile_i, tile_j);
         for (var i = 0; i < objects.length; i++) {
