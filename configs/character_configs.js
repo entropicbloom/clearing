@@ -173,7 +173,7 @@ stoner_dude_1 = new NPC(
         ["I'm like the human eye.", "I need to constantly keep moving otherwise I will stop seeing the things that are beautiful."],
         ["Sometimes the ego takes up a huge chunk of your consciousness, but it is never it."],
         ["Consciousness is a layered experience, corresponding to different abstraction layers.",
-         "Drugs can, among other things, chance the equalizer setting of that layering."]
+         "Drugs can, among other things, chance the equalizer setting of that layering."],
         ["Consciousness is like a gel and if you stretch it to contain many things it loses density and becomes more unclear."],
         ["Is consciousness fundamentally based on changes?",
          "And can it therefore only be experienced from the transition of one state into the next?"],
