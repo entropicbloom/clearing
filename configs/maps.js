@@ -19,7 +19,7 @@ stoner_room_map = {
         [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,],
     ],
     'passages': [
-        {i: 8, j: 11, destination_id: 0, new_i: 10, new_j: 13}
+        {i: 8, j: 11, destination_id: 0, new_i: 9, new_j: 12}
     ],
     'objects': [
         stoner_dude_1
@@ -46,7 +46,7 @@ room_map = {
         [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,],
     ],
     'passages': [
-        {i: 8, j: 11, destination_id: 0, new_i: 14, new_j: 7}
+        {i: 8, j: 11, destination_id: 0, new_i: 13, new_j: 5}
     ],
     'objects': [
         test_canvas
@@ -150,8 +150,8 @@ cave_map = {
         [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
     ],
     'passages': [
-        {i: 19, j: 9, destination_id: 3, new_i: 6, new_j: 5},
-        {i: 5, j: 11, destination_id: 0, new_i: 11, new_j: 3},
+        {i: 19, j: 9, destination_id: 3, new_i: 6, new_j: 4},
+        {i: 5, j: 11, destination_id: 0, new_i: 11, new_j: 2},
         {i: 8, j: 2, destination_id: 5, new_i: 10, new_j: 13}
     ],
     'objects': [
@@ -179,7 +179,7 @@ lake_cave_map = {
         [-1, -1, -1, -1, -1, 69, 66, 66, 66, 66, 59, 66, 66, 66, 70, -1, -1, -1, -1, -1, -1],
     ],
     'passages': [
-        {i: 10, j: 14, destination_id: 4, new_i: 8, new_j: 4}
+        {i: 10, j: 14, destination_id: 4, new_i: 8, new_j: 3}
     ],
     'objects': [
         stoner_dude_lake,
