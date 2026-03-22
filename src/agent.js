@@ -14,7 +14,8 @@ var Agent = class Agent extends WorldObject {
         this.toX = this.x;
         this.toY = this.y;
         this.moveProgress = 0;
-        this.moveDuration = 8; // frames to complete one tile move
+        this.moveDuration = 16; // frames to complete one tile move
+        this.legSide = 0; // alternates between 0 and 1 each move for leg mirroring
     }
 
     move(direction) {
@@ -32,6 +33,7 @@ var Agent = class Agent extends WorldObject {
 
         this.orientation = direction;
         this.step = (this.step + 1) % 2;
+        this.legSide = (this.legSide + 1) % 2;
 
         this.fromX = this.x;
         this.fromY = this.y;
@@ -93,8 +95,14 @@ var SpriteCharacter = class SpriteCharacter extends Agent {
 
         var current_sprite = this.world.char_sprite_arr[char_sprites_at_step.i + color_offset][char_sprites_at_step.j];
 
+        // For up/down walking sprites, mirror on alternate legs to show the other leg
+        var shouldMirror = char_sprites_at_step.mirror;
+        if (step_nr === 1 && this.legSide === 1 && (this.orientation === 'up' || this.orientation === 'down')) {
+            shouldMirror = !shouldMirror;
+        }
+
         var draw_y = this.y - this.object_height / 2 - this.world.current_env.get_y_offset()
-        if (char_sprites_at_step.mirror) {
+        if (shouldMirror) {
             push();
             scale(-1,1);
             var draw_x = -this.x - this.object_width / 2 + this.world.current_env.get_x_offset()
