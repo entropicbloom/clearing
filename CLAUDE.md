@@ -70,12 +70,14 @@ Map structure:
 
 | ID | File | Scrolling | Key features |
 |----|------|-----------|-------------|
-| 0 | home.js | yes | Starting area, old_man_1 NPC, passages to rooms/fields/cave |
-| 1 | room.js | no | Simple interior room |
+| 0 | home.js | yes | Starting area, old_man_1 NPC, passages to building/stoner house/fields/cave |
+| 1 | building.js | no | Ground floor staircase, locked door, stairs up |
 | 2 | stoner_room.js | no | Interior with Buddhabrot canvas, stoner_dude_1 NPC |
 | 3 | fields.js | yes | Forest/clearing, old_man_2 NPC, whirlpool link |
 | 4 | cave.js | yes | Purple cave system, passages to fields/home/lake |
 | 5 | lake_cave.js | no | Lake background image, stoner_dude_lake NPC |
+| 6 | building.js | no | Second floor apartment |
+| 7 | building.js | no | Upper floor staircase, stairs down, door to apartment |
 
 Passages use `{i, j, destination_id, new_i, new_j}` where `i` is column and `j` is row.
 

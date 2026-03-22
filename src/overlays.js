@@ -99,11 +99,13 @@ class Canvas {
         pop()
 
         // "press E to close" hint
+        push()
         fill(200)
         noStroke()
         textSize(12)
         textAlign(RIGHT)
         text('press E to close', width - 10, height - 10)
+        pop()
 
         this.counter += 1
     }

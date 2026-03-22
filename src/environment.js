@@ -225,12 +225,6 @@ class ScrollingGridEnvironment extends GridEnvironment {
         this.draw_contents()
     }
 
-    update_contents() {
-        for (var i = 0; i < this.objects.length; i++) {
-            this.objects[i].update_object();
-        }
-    }
-
     get_i_offset() {return this.i_offset}
 
     get_j_offset() {return this.j_offset}
